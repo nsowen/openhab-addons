@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.homematicip.internal.model.common;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ import java.util.List;
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public class HeatingCoolingProfileDay {
+public class HeatingCoolingProfileDay extends HomematicIPObject {
 
     private String baseValue;
     private List<HeatingCoolingPeriod> periods;

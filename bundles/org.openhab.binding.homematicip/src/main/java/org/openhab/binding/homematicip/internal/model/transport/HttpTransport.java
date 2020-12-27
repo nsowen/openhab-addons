@@ -15,6 +15,7 @@ package org.openhab.binding.homematicip.internal.model.transport;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentProvider;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -74,6 +75,8 @@ public class HttpTransport implements Transport {
         this.defaultHeaders.put(key, value);
     }
 
+
+
     @Override
     public void setClientAuth(String clientAuth) {
         setDefaultHeader(HEADER_CLIENTAUTH, clientAuth);
@@ -82,6 +85,11 @@ public class HttpTransport implements Transport {
     @Override
     public void setAuthToken(String authToken) {
         setDefaultHeader(HEADER_AUTHTOKEN, authToken);
+    }
+
+    @Override
+    public boolean hasAuthToken() {
+        return StringUtils.isNotEmpty(defaultHeaders.get(HEADER_AUTHTOKEN));
     }
 
     @Override

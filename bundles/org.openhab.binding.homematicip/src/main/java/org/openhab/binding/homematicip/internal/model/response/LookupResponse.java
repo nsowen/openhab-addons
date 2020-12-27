@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.response;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 /**
  * Response for Lookup request
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class LookupResponse {
+public class LookupResponse extends HomematicIPObject {
 
     private String urlREST;
     private String urlWebSocket;

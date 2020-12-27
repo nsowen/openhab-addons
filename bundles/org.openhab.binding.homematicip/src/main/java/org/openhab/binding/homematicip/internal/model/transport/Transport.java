@@ -13,6 +13,7 @@
 package org.openhab.binding.homematicip.internal.model.transport;
 
 import org.bouncycastle.jcajce.provider.digest.SHA512;
+import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jetty.server.session.SessionHandler;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.util.concurrent.Executor;
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
+@NonNullByDefault
 public interface Transport {
 
     String CLIENTAUTH_HASH_SALT = "jiLpVitHvWnIGD1yo7MA";
@@ -40,6 +42,8 @@ public interface Transport {
     void setClientAuth(String clientAuth);
 
     void setAuthToken(String authToken);
+
+    boolean hasAuthToken();
 
     <T, V> CompletableFuture<Response<T,V>> postAsync(Request<T,V> request, Class<V> clazz, Executor executor);
 

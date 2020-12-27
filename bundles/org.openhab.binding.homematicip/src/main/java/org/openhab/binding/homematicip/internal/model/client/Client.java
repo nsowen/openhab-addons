@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.homematicip.internal.model.client;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.common.ClientType;
 
 import java.time.Instant;
@@ -23,7 +24,7 @@ import java.util.StringJoiner;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class Client {
+public class Client extends HomematicIPObject {
 
     private ClientType clientType;
     private String id;

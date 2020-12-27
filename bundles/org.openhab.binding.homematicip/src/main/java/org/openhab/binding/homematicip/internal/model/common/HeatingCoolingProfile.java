@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.homematicip.internal.model.common;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ import java.util.Map;
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public class HeatingCoolingProfile {
+public class HeatingCoolingProfile extends HomematicIPObject {
 
     private String id;
     private String homeId;

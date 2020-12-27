@@ -1,5 +1,6 @@
 package org.openhab.binding.homematicip.internal;
 
+import org.apache.commons.lang.StringUtils;
 import org.openhab.binding.homematicip.internal.model.transport.HttpTransport;
 import org.openhab.core.config.core.status.ConfigStatusMessage;
 import org.openhab.core.io.net.http.HttpClientFactory;
@@ -30,6 +31,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
     private final HttpClientFactory httpClientFactory;
     private final WebSocketFactory webSocketFactory;
     private HomematicIPConnection connection;
+    private HomematicIPConfiguration bridgeConfig;
 
     public HomematicIPBridgeHandler(Bridge bridge, HttpClientFactory httpClientFactory, WebSocketFactory webSocketFactory) {
         super(bridge);
@@ -39,31 +41,40 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
 
     @Override
     public void initialize() {
+        bridgeConfig = getConfigAs(HomematicIPConfiguration.class);
         updateStatus(ThingStatus.UNKNOWN);
-        try {
-            this.connection = createConnection();
-            this.connection.initAsync(scheduler)
-                    .thenAccept((c) -> {
-                        // todo check if all is set
-                        updateStatus(ThingStatus.ONLINE);
-                    });
-        } catch (IOException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
-            logger.warn("Cannot initialize Homematic IP: {}", e.getMessage(), e);
+        if (StringUtils.isNotEmpty(bridgeConfig.getAccessPointId())) {
+            try {
+                this.connection = createConnection();
+                this.connection.initAsync(scheduler)
+                        .thenAccept((c) -> {
+                            if (connection.isReadyForPairing()) {
+                                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                                        "@text/offline.conf-error-press-pairing-button");
+                            } else if (connection.isReadyForUse()) {
+                                updateStatus(ThingStatus.ONLINE);
+                            } else {
+                                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                                        "@text/offline.communication-error");
+                            }
+                        });
+            } catch (IOException | NoSuchAlgorithmException e) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "@text/offline.communication-error");
+                logger.warn("Cannot initialize Homematic IP: {}", e.getMessage(), e);
+            }
+        } else {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                    "@text/offline.conf-error-no-accesspoint-id");
         }
-
     }
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-
     }
 
     private HomematicIPConnection createConnection() throws IOException, NoSuchAlgorithmException {
-        var accessPointId = (String) getThing().getConfiguration().get("accessPointId");
         var transport = new HttpTransport(httpClientFactory, webSocketFactory);
-        var connection = new HomematicIPConnection(getThing().getUID().getAsString(), accessPointId, transport);
+        var connection = new HomematicIPConnection(getThing().getUID().getAsString(), bridgeConfig.getAccessPointId(), bridgeConfig.getAuthToken(), transport);
         return connection;
     }
 

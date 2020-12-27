@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.homematicip.internal.model.channel;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ import java.util.List;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public abstract class FunctionalChannel {
+public abstract class FunctionalChannel extends HomematicIPObject {
     protected int index;
     protected int groupIndex;
     protected String label;

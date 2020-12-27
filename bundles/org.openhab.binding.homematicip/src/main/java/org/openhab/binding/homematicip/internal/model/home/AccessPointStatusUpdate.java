@@ -1,6 +1,6 @@
 package org.openhab.binding.homematicip.internal.model.home;
 
-import org.openhab.binding.homematicip.internal.model.device.DeviceUpdateState;
+import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateState;
 
 import java.time.Instant;
 

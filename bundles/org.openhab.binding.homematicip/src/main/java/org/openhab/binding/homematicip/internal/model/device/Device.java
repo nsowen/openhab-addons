@@ -12,14 +12,14 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.common.ConnectionType;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-import org.openhab.binding.homematicip.internal.model.common.LiveUpdateState;
+import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateState;
 
 import java.time.Instant;
 import java.util.Map;
-import java.util.Set;
 import java.util.StringJoiner;
 
 /**
@@ -28,7 +28,7 @@ import java.util.StringJoiner;
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public abstract class Device {
+public abstract class Device extends HomematicIPObject {
 
     protected String id;
     protected String homeId;

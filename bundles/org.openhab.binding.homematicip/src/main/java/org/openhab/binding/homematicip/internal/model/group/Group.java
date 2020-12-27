@@ -28,7 +28,7 @@ import java.util.StringJoiner;
 public abstract class Group {
 
     protected String id;
-    protected String homeId;<
+    protected String homeId;
     protected String metaGroupId;
     protected String label;
     protected Instant lastStatusUpdate;

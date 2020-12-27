@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.response;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 /**
  * Response for auth token
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class AuthConfirmTokenResponse {
+public class AuthConfirmTokenResponse extends HomematicIPObject {
 
     private String clientId;
 

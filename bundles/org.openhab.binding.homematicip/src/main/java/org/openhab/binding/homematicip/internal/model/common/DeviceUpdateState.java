@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model.device;
+package org.openhab.binding.homematicip.internal.model.common;
 
 /**
  * Homematic IP update state

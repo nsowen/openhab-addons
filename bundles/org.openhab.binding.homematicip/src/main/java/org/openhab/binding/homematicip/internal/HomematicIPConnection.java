@@ -12,6 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal;
 
+import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.homematicip.internal.model.request.*;
 import org.openhab.binding.homematicip.internal.model.response.AuthConfirmTokenResponse;
 import org.openhab.binding.homematicip.internal.model.response.AuthRequestTokenResponse;
@@ -35,6 +38,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
+@NonNullByDefault
 public class HomematicIPConnection {
 
     private final String uuid;
@@ -42,15 +46,27 @@ public class HomematicIPConnection {
     private final Transport transport;
     private final ClientCharacteristics clientCharacteristics;
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private String urlREST;
-    private String urlWebSocket;
+    private @Nullable String urlREST;
+    private @Nullable String urlWebSocket;
 
     public HomematicIPConnection(String uuid, String accessPointId, Transport transport) throws NoSuchAlgorithmException, IOException {
+        this(uuid, accessPointId, null, transport);
+    }
+    public HomematicIPConnection(String uuid, String accessPointId, String authToken, Transport transport) throws NoSuchAlgorithmException {
         this.uuid = uuid;
         this.accessPointId = accessPointId.replaceAll("[^A-Za-z0-9 ]", "").toUpperCase();
         this.transport = transport;
         this.transport.setAccessPointId(this.accessPointId);
+        this.transport.setAuthToken(authToken);
         this.clientCharacteristics = createClientCharacteristics();
+    }
+
+    public boolean isReadyForPairing() {
+        return (!transport.hasAuthToken() && StringUtils.isNotEmpty(urlREST));
+    }
+
+    public boolean isReadyForUse() {
+        return (transport.hasAuthToken() && StringUtils.isNotEmpty(urlREST));
     }
 
     public void setAuthToken(String authToken) {

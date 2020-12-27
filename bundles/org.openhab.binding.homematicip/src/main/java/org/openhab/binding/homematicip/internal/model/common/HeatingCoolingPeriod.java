@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.common;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 /**
  * Homematic IP heating cooling period
  *
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public class HeatingCoolingPeriod {
+public class HeatingCoolingPeriod extends HomematicIPObject {
 
     private String starttime;
     private String endtime;

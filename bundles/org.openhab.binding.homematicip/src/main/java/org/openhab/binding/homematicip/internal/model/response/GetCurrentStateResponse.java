@@ -1,5 +1,6 @@
 package org.openhab.binding.homematicip.internal.model.response;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.client.Client;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.group.Group;
@@ -14,7 +15,7 @@ import java.util.StringJoiner;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-26
  */
-public class GetCurrentStateResponse {
+public class GetCurrentStateResponse extends HomematicIPObject {
 
     private Home home;
     private Map<String, Group> groups;
