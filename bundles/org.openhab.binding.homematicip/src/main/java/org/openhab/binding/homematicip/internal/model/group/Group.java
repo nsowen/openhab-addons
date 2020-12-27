@@ -17,6 +17,7 @@ import org.openhab.binding.homematicip.internal.model.channel.Channel;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.StringJoiner;
 
 /**
  * New class.
@@ -27,7 +28,7 @@ import java.util.List;
 public abstract class Group {
 
     protected String id;
-    protected String homeId;
+    protected String homeId;<
     protected String metaGroupId;
     protected String label;
     protected Instant lastStatusUpdate;
@@ -35,52 +36,17 @@ public abstract class Group {
     protected String type;
     protected List<Channel> channels;
 
-    public String getId() {
-        return id;
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Group.class.getSimpleName() + "[", "]")
+                .add("id='" + id + "'")
+                .add("homeId='" + homeId + "'")
+                .add("metaGroupId='" + metaGroupId + "'")
+                .add("label='" + label + "'")
+                .add("lastStatusUpdate=" + lastStatusUpdate)
+                .add("unreach='" + unreach + "'")
+                .add("type='" + type + "'")
+                .add("channels=" + channels)
+                .toString();
     }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getHomeId() {
-        return homeId;
-    }
-
-    public void setHomeId(String homeId) {
-        this.homeId = homeId;
-    }
-
-    public String getMetaGroupId() {
-        return metaGroupId;
-    }
-
-    public void setMetaGroupId(String metaGroupId) {
-        this.metaGroupId = metaGroupId;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
-    }
-
-    public String getUnreach() {
-        return unreach;
-    }
-
-    public void setUnreach(String unreach) {
-        this.unreach = unreach;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
 }
