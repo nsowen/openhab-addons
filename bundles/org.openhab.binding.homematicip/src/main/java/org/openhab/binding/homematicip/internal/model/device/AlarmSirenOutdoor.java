@@ -10,17 +10,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model;
+package org.openhab.binding.homematicip.internal.model.device;
 
 /**
- * Homematic IP live update state
+ * Device-specific implementation
  *
- * @author Nils Sowen (n.sowen@2scale.net)
- * @since 2020-12-24
+ * @author Nils Sowen (nils@sowen.de)
+ * @since 2020-12-27
  */
-public enum LiveUpdateState {
-    UP_TO_DATE,
-    UPDATE_AVAILABLE,
-    UPDATE_INCOMPLETE,
-    LIVE_UPDATE_NOT_SUPPORTED
+public class AlarmSirenOutdoor extends Device {
 }

@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model;
+package org.openhab.binding.homematicip.internal.model.common;
 
 /**
  * Homematic IP functional channels
@@ -18,7 +18,7 @@ package org.openhab.binding.homematicip.internal.model;
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public enum FunctionalChannel {
+public enum FunctionalChannelType {
     FUNCTIONAL_CHANNEL,
     ACCELERATION_SENSOR_CHANNEL,
     ACCESS_CONTROLLER_CHANNEL,

@@ -10,18 +10,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model;
+package org.openhab.binding.homematicip.internal.model.device;
 
 /**
- * Homematic IP update state
+ * Device-specific implementation
  *
- * @author Nils Sowen (n.sowen@2scale.net)
- * @since 2020-12-24
+ * @author Nils Sowen (nils@sowen.de)
+ * @since 2020-12-27
  */
-public enum DeviceUpdateState {
-    UP_TO_DATE,
-    TRANSFERING_UPDATE,
-    UPDATE_AVAILABLE,
-    UPDATE_AUTHORIZED,
-    BACKGROUND_UPDATE_NOT_SUPPORTED
+public class ContactInterface extends Device {
 }

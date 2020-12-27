@@ -12,10 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
-import org.openhab.binding.homematicip.internal.model.ConnectionType;
-import org.openhab.binding.homematicip.internal.model.DeviceUpdateState;
-import org.openhab.binding.homematicip.internal.model.FunctionalChannel;
-import org.openhab.binding.homematicip.internal.model.LiveUpdateState;
+import org.openhab.binding.homematicip.internal.model.common.ConnectionType;
+import org.openhab.binding.homematicip.internal.model.common.FunctionalChannelType;
+import org.openhab.binding.homematicip.internal.model.common.LiveUpdateState;
 
 import java.util.Set;
 
@@ -44,7 +43,7 @@ public abstract class Device {
     protected String serializedGlobalTradeItemNumber;
 
     // FunctionalChannel "base": available on most devices
-    protected FunctionalChannel baseChannel = FunctionalChannel.DEVICE_BASE;
+    protected FunctionalChannelType baseChannel = FunctionalChannelType.DEVICE_BASE;
     protected boolean unreach;
     protected float rssiDeviceValue;
     protected float rssiPeerValue;

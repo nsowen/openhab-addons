@@ -10,17 +10,16 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model;
+package org.openhab.binding.homematicip.internal.model.common;
 
 /**
- * Homematic IP connection type
+ * Weather day and time
  *
- * @author Nils Sowen (n.sowen@2scale.net)
- * @since 2020-12-24
+ * @author Nils Sowen (nils@sowen.de)
+ * @since 2020-12-27
  */
-public enum ConnectionType {
-    HMIP_RF,
-    HMIP_WIRED,
-    HMIP_LAN,
-    HMIP_WLAN
+public enum WeatherDayTime {
+    DAY,
+    TWILIGHT,
+    NIGHT
 }

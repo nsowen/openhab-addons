@@ -27,13 +27,18 @@ public class Request<T,V> {
 
     private T requestBody;
     private String url;
-    private boolean authenticated;
+    private boolean authenticated = true;
     private Map<String,String> additionalHeaders = new HashMap<>();
     private long timeoutMillis = 5000L;
 
-    public Request(String url, T requestBody) {
+    public Request(String url, T requestBody, boolean authenticated) {
         this.url = url;
         this.requestBody = requestBody;
+        this.authenticated = authenticated;
+    }
+
+    public Request(String url, T requestBody) {
+        this(url, requestBody, true);
     }
 
     public Request(String url) {

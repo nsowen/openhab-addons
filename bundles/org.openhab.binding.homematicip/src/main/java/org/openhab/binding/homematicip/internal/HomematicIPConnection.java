@@ -15,6 +15,7 @@ package org.openhab.binding.homematicip.internal;
 import org.openhab.binding.homematicip.internal.model.request.*;
 import org.openhab.binding.homematicip.internal.model.response.AuthConfirmTokenResponse;
 import org.openhab.binding.homematicip.internal.model.response.AuthRequestTokenResponse;
+import org.openhab.binding.homematicip.internal.model.response.GetCurrentStateResponse;
 import org.openhab.binding.homematicip.internal.model.response.LookupResponse;
 import org.openhab.binding.homematicip.internal.model.transport.Request;
 import org.openhab.binding.homematicip.internal.model.transport.Transport;
@@ -22,6 +23,11 @@ import org.openhab.binding.homematicip.internal.model.transport.Transport;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Class representing an online connection to the Homematic IP Service
@@ -35,6 +41,7 @@ public class HomematicIPConnection {
     private final String accessPointId;
     private final Transport transport;
     private final ClientCharacteristics clientCharacteristics;
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private String urlREST;
     private String urlWebSocket;
 
@@ -44,20 +51,43 @@ public class HomematicIPConnection {
         this.transport = transport;
         this.transport.setAccessPointId(this.accessPointId);
         this.clientCharacteristics = createClientCharacteristics();
-        lookup();
+    }
+
+    public void setAuthToken(String authToken) {
+        this.transport.setAuthToken(authToken);
+    }
+
+    public CompletableFuture<Void> initAsync(Executor executor) {
+        var wl = lock.writeLock();
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+              lookup();
+            } catch (Exception e) {
+                throw new CompletionException(e);
+            }
+            return null;
+        }, executor);
     }
 
     private void lookup() throws IOException {
+        var wl = lock.writeLock();
         var response = transport.post(
                 new Request<>(
                         Transport.LOOKUP_URL,
-                            new LookupRequest(accessPointId, clientCharacteristics)),
+                            new LookupRequest(accessPointId, clientCharacteristics), false),
                 LookupResponse.class);
         if (response.getStatusCode() != 200 || response.getResponseBody() == null) {
             throw new IOException("Unexpected response for lookup: " + response);
         }
-        this.urlREST = response.getResponseBody().getUrlREST();
-        this.urlWebSocket = response.getResponseBody().getUrlWebSocket();
+        try {
+            wl.lock();
+            this.urlREST = response.getResponseBody().getUrlREST();
+            this.urlWebSocket = response.getResponseBody().getUrlWebSocket();
+        } finally {
+            if (wl.isHeldByCurrentThread()) {
+                wl.unlock();
+            }
+        }
     }
 
     private ClientCharacteristics createClientCharacteristics() {
@@ -73,23 +103,36 @@ public class HomematicIPConnection {
         return characteristics;
     }
 
+    public CompletableFuture<HomematicIPConnection> getCurrentState(Executor executor) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                var request = new Request<GetCurrentStateRequest, GetCurrentStateResponse>(
+                        restUrl("/hmip/home/getCurrentState"),
+                        new GetCurrentStateRequest(accessPointId, clientCharacteristics));
+                final var response = transport.post(request, GetCurrentStateResponse.class);
+                if (response.getStatusCode() != 200) {
+                    throw new IllegalStateException("Expected 200 ok");
+                }
+            } catch (Exception e) {
+                throw new CompletionException(e);
+            }
+            return this;
+        }, executor);
+    }
+
     public void authConnectionRequest() throws IOException {
-        final var response = transport.post(
-                new Request<>(
-                        restUrl("/hmip/auth/connectionRequest"),
-                                new AuthConnectionRequest(uuid, "OpenHAB Homematic IP", accessPointId)),
-                Void.class);
+        final var request = new Request<AuthConnectionRequest, Void>(restUrl("/hmip/auth/connectionRequest"),
+                new AuthConnectionRequest(uuid, "OpenHAB Homematic IP", accessPointId), false);
+        final var response = transport.post(request, Void.class);
         if (response.getStatusCode() != 200) {
             throw new IOException("Unexpected response for authConnectionRequest: " + response);
         }
     }
 
     public boolean authIsRequestAcknowledgedRequest() throws IOException {
-        final var response = transport.post(
-                new Request<>(
-                        restUrl("/hmip/auth/isRequestAcknowledged"),
-                            new AuthIsRequestAcknowledgedRequest(uuid)),
-                Void.class);
+        final var request = new Request<AuthIsRequestAcknowledgedRequest, Void>(restUrl("/hmip/auth/isRequestAcknowledged"),
+                new AuthIsRequestAcknowledgedRequest(uuid), false);
+        final var response = transport.post(request, Void.class);
         switch (response.getStatusCode()) {
             case 200:
                 return true;
@@ -101,11 +144,9 @@ public class HomematicIPConnection {
     }
 
     public AuthRequestTokenResponse authRequestToken() throws IOException {
-        final var response = transport.post(
-                new Request<>(
-                        restUrl("/hmip/auth/requestAuthToken"),
-                            new AuthRequestTokenRequest(uuid)),
-                AuthRequestTokenResponse.class);
+        final var request = new Request<AuthRequestTokenRequest, AuthRequestTokenResponse>(restUrl("/hmip/auth/requestAuthToken"),
+                new AuthRequestTokenRequest(uuid), false);
+        final var response = transport.post(request, AuthRequestTokenResponse.class);
         if (response.getStatusCode() != 200) {
             throw new IOException("Unexpected response for authRequestToken: " + response);
         }
@@ -113,11 +154,9 @@ public class HomematicIPConnection {
     }
 
     public AuthConfirmTokenResponse authConfirmToken(String authToken) throws IOException {
-        final var response = transport.post(
-                new Request<>(
-                        restUrl("/hmip/auth/confirmAuthToken"),
-                        new AuthConfirmTokenRequest(uuid, authToken)),
-                AuthConfirmTokenResponse.class);
+        final var request = new Request<AuthConfirmTokenRequest, AuthConfirmTokenResponse>(restUrl("/hmip/auth/confirmAuthToken"),
+                new AuthConfirmTokenRequest(uuid, authToken), false);
+        final var response = transport.post(request, AuthConfirmTokenResponse.class);
         if (response.getStatusCode() != 200) {
             throw new IOException("Unexpected response for authConfirmToken: " + response);
         }
@@ -125,7 +164,16 @@ public class HomematicIPConnection {
     }
 
     private String restUrl(String path) {
-        return this.urlREST + path;
+        var rl = lock.readLock();
+        try {
+            rl.lock();
+            if (this.urlREST == null) {
+                throw new IllegalStateException("Not initialized.");
+            }
+            return this.urlREST + path;
+        } finally {
+            rl.unlock();
+        }
     }
 
 }
