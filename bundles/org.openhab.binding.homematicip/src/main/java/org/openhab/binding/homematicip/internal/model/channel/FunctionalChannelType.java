@@ -81,6 +81,4 @@ public enum FunctionalChannelType {
     public Class<? extends FunctionalChannel> getClazz() {
         return clazz;
     }
-
-
 }

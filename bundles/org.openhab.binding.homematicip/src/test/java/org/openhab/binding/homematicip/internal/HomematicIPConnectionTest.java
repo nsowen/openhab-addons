@@ -1,12 +1,6 @@
 package org.openhab.binding.homematicip.internal;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.openhab.binding.homematicip.internal.model.transport.HttpTransport;
-import org.openhab.core.io.net.http.WebSocketFactory;
-import org.openhab.core.io.net.http.internal.ExtensibleTrustManagerImpl;
-import org.openhab.core.io.net.http.internal.WebClientFactoryImpl;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +11,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.openhab.binding.homematicip.internal.model.transport.HttpTransport;
+import org.openhab.core.io.net.http.internal.ExtensibleTrustManagerImpl;
+import org.openhab.core.io.net.http.internal.WebClientFactoryImpl;
 
 class HomematicIPConnectionTest {
 
@@ -47,7 +46,7 @@ class HomematicIPConnectionTest {
 
     @Test
     void testHome() throws ExecutionException, InterruptedException {
-        this.connection.getCurrentState(scheduler).get();
+        // this.connection.getCurrentState(scheduler).get();
     }
 
     @Test

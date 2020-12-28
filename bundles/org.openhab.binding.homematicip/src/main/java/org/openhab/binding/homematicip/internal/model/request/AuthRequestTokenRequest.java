@@ -33,5 +33,4 @@ public class AuthRequestTokenRequest {
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
-
 }

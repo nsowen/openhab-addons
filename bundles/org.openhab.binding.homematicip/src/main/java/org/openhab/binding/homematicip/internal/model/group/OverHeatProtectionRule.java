@@ -30,5 +30,4 @@ public class OverHeatProtectionRule extends Group {
     protected int endHour;
     protected int endMinute;
     protected int endSunset;
-
 }

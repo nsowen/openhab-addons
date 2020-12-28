@@ -29,5 +29,4 @@ public class SwitchingGroup extends SwitchGroupBase {
     private ShadingStateType primaryShadingStateType = ShadingStateType.NOT_EXISTENT;
     private double secondaryShadingLevel;
     private ShadingStateType secondaryShadingStateType = ShadingStateType.NOT_EXISTENT;
-
 }

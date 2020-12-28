@@ -12,11 +12,11 @@
  */
 package org.openhab.binding.homematicip.internal.model.group;
 
+import java.time.Instant;
+
 import org.openhab.binding.homematicip.internal.model.common.AcousticAlarmSignal;
 import org.openhab.binding.homematicip.internal.model.common.OpticalAlarmSignal;
 import org.openhab.binding.homematicip.internal.model.common.SmokeDetectorAlarmType;
-
-import java.time.Instant;
 
 /**
  * Group-specific implementation
@@ -33,5 +33,4 @@ public class AlarmSwitchingGroup extends Group {
     private OpticalAlarmSignal signalOptical;
     private SmokeDetectorAlarmType smokeDetectorAlarmType;
     private boolean acousticFeedbackEnabled;
-
 }

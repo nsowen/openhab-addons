@@ -22,5 +22,4 @@ public class HeatingCoolingDemandGroup extends Group {
 
     private boolean on;
     private float dimLevel;
-
 }

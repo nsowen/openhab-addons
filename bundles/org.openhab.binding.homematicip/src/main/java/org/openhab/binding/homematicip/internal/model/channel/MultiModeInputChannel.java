@@ -6,6 +6,5 @@ package org.openhab.binding.homematicip.internal.model.channel;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class
-MultiModeInputChannel extends FunctionalChannel {
+public class MultiModeInputChannel extends FunctionalChannel {
 }

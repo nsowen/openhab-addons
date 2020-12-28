@@ -12,9 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal.model.channel;
 
-import org.openhab.binding.homematicip.internal.model.common.OptionalFeatureType;
-
 import java.util.Map;
+
+import org.openhab.binding.homematicip.internal.model.common.OptionalFeatureType;
 
 /**
  * Device-specific implementation
@@ -32,6 +32,5 @@ public class DeviceBaseChannel extends FunctionalChannel {
     protected float rssiPeerValue;
     protected boolean dutyCycle;
     protected boolean configPending;
-    protected Map<OptionalFeatureType,Boolean> supportedOptionalFeatures;
-
+    protected Map<OptionalFeatureType, Boolean> supportedOptionalFeatures;
 }

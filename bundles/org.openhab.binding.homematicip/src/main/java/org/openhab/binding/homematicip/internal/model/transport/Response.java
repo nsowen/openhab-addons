@@ -21,12 +21,12 @@ import java.util.StringJoiner;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class Response<T,V> {
+public class Response<T, V> {
 
     private V responseBody;
     private int statusCode;
     private String statusText;
-    private Request<T,V> request;
+    private Request<T, V> request;
     private long timeMillis;
 
     public V getResponseBody() {
@@ -53,11 +53,11 @@ public class Response<T,V> {
         this.statusText = statusText;
     }
 
-    public Request<T,V> getRequest() {
+    public Request<T, V> getRequest() {
         return request;
     }
 
-    public void setRequest(Request<T,V> request) {
+    public void setRequest(Request<T, V> request) {
         this.request = request;
     }
 
@@ -71,8 +71,10 @@ public class Response<T,V> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Response<?, ?> response = (Response<?, ?>) o;
         return statusCode == response.statusCode && Objects.equals(responseBody, response.responseBody)
                 && Objects.equals(statusText, response.statusText) && Objects.equals(request, response.request);
@@ -85,12 +87,8 @@ public class Response<T,V> {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Response.class.getSimpleName() + "[", "]")
-                .add("responseBody=" + responseBody)
-                .add("statusCode=" + statusCode)
-                .add("statusText='" + statusText + "'")
-                .add("request=" + request)
-                .add("timeMillis=" + timeMillis)
-                .toString();
+        return new StringJoiner(", ", Response.class.getSimpleName() + "[", "]").add("responseBody=" + responseBody)
+                .add("statusCode=" + statusCode).add("statusText='" + statusText + "'").add("request=" + request)
+                .add("timeMillis=" + timeMillis).toString();
     }
 }

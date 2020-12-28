@@ -2,12 +2,6 @@ package org.openhab.binding.homematicip.internal.model.common;
 
 import org.openhab.binding.homematicip.internal.model.group.*;
 
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 /**
  * New class.
  *
@@ -55,5 +49,4 @@ public enum GroupType {
     public Class<? extends Group> getClazz() {
         return clazz;
     }
-
 }

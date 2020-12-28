@@ -23,5 +23,4 @@ import java.util.List;
 public class LinkedSwitchingGroup extends Group {
 
     private List<String> switchChannels;
-
 }

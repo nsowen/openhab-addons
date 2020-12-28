@@ -19,5 +19,6 @@ package org.openhab.binding.homematicip.internal.model.common;
  * @since 2020-12-24
  */
 public enum ClientType {
-    APP, C2C
+    APP,
+    C2C
 }

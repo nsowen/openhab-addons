@@ -12,9 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal.model.group;
 
-import org.openhab.binding.homematicip.internal.model.common.HeatingFailueValidationType;
-
 import java.time.Instant;
+
+import org.openhab.binding.homematicip.internal.model.common.HeatingFailueValidationType;
 
 /**
  * Group-specific implementation
@@ -29,5 +29,4 @@ public class HeatingFailureAlertRuleGroup extends Group {
     private long checkInterval;
     private long validationTimeout;
     private Instant lastExecutionTimestamp;
-
 }

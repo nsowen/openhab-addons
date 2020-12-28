@@ -22,5 +22,4 @@ public class HeatingChangeoverGroup extends Group {
 
     private boolean on;
     private float dimLevel;
-
 }

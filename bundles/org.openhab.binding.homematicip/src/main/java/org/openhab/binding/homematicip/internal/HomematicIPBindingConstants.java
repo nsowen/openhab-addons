@@ -30,7 +30,7 @@ public class HomematicIPBindingConstants {
     public static final String CONFIG_DESCRIPTION_URI_CHANNEL = "channel-type:homematic:config";
 
     // List of all Thing Type UIDs
-    public static final ThingTypeUID THING_TYPE_SAMPLE = new ThingTypeUID(BINDING_ID, "sample");
+    public static final ThingTypeUID THING_TYPE_SAMPLE = new ThingTypeUID(BINDING_ID, "HOME_CONTROL_ACCESS_POINT");
 
     // List of all Channel ids
     public static final String CHANNEL_1 = "channel1";

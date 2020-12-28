@@ -12,15 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.home;
 
+import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+
 import org.openhab.binding.homematicip.internal.model.common.ApExchangeState;
 import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateStrategy;
 import org.openhab.binding.homematicip.internal.model.common.FunctionalHomeType;
 import org.openhab.binding.homematicip.internal.model.common.HomeUpdateState;
 import org.openhab.binding.homematicip.internal.model.home.functional.FunctionalHome;
-
-import java.util.List;
-import java.util.Map;
-import java.util.StringJoiner;
 
 /**
  * Represents the overall home state as returned from Homematic IP API
@@ -56,28 +56,21 @@ public class Home {
     private List<String> ruleGroups;
     // todo private Map<?,String> ruleMetaDatas;
     private LiveOTAUStatus liveOTAUStatus;
-    private Map<String,AccessPointStatusUpdate> accessPointUpdateStates;
+    private Map<String, AccessPointStatusUpdate> accessPointUpdateStates;
     private boolean liveUpdateSupported;
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Home.class.getSimpleName() + "[", "]")
-                .add("weather=" + weather)
-                .add("connected=" + connected)
-                .add("currentAPVersion='" + currentAPVersion + "'")
-                .add("availableAPVersion='" + availableAPVersion + "'")
-                .add("timeZoneId='" + timeZoneId + "'")
-                .add("location=" + location)
-                .add("pinAssigned=" + pinAssigned)
-                .add("isLiveUpdateSupported=" + isLiveUpdateSupported)
-                .add("dutyCycle=" + dutyCycle)
-                .add("carrierSense=" + carrierSense)
-                .add("updateState=" + updateState)
+        return new StringJoiner(", ", Home.class.getSimpleName() + "[", "]").add("weather=" + weather)
+                .add("connected=" + connected).add("currentAPVersion='" + currentAPVersion + "'")
+                .add("availableAPVersion='" + availableAPVersion + "'").add("timeZoneId='" + timeZoneId + "'")
+                .add("location=" + location).add("pinAssigned=" + pinAssigned)
+                .add("isLiveUpdateSupported=" + isLiveUpdateSupported).add("dutyCycle=" + dutyCycle)
+                .add("carrierSense=" + carrierSense).add("updateState=" + updateState)
                 .add("powerMeterUnitPrice=" + powerMeterUnitPrice)
                 .add("powerMeterCurrency='" + powerMeterCurrency + "'")
                 .add("deviceUpdateStrategy=" + deviceUpdateStrategy)
                 .add("lastReadyForUpdateTimestamp=" + lastReadyForUpdateTimestamp)
-                .add("functionalHomes=" + functionalHomes)
-                .toString();
+                .add("functionalHomes=" + functionalHomes).toString();
     }
 }

@@ -22,5 +22,4 @@ public class ShutterWindProtectionRule extends Group {
 
     private float windSpeedThreshold;
     private float targetShutterLevel;
-
 }

@@ -66,7 +66,6 @@ public class LightAndShadow extends FunctionalHome {
                 .add("extendedLinkedShutterGroups=" + extendedLinkedShutterGroups)
                 .add("extendedLinkedSwitchingGroups=" + extendedLinkedSwitchingGroups)
                 .add("shutterProfileGroups=" + shutterProfileGroups)
-                .add("switchingProfileGroups=" + switchingProfileGroups)
-                .toString();
+                .add("switchingProfileGroups=" + switchingProfileGroups).toString();
     }
 }

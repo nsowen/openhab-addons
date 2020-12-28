@@ -25,5 +25,4 @@ public class EnvironmentGroup extends Group {
     private boolean raining;
     private double windSpeed = 0.0;
     private double humidity = 0.0;
-
 }

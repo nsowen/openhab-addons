@@ -23,10 +23,10 @@ import org.eclipse.jdt.annotation.Nullable;
 @NonNullByDefault
 public class HomematicIPConfiguration {
 
-    private String accessPointId;
+    private @Nullable String accessPointId;
     private @Nullable String authToken;
 
-    public String getAccessPointId() {
+    public @Nullable String getAccessPointId() {
         return accessPointId;
     }
 

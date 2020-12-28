@@ -22,5 +22,4 @@ public class LockOutProtectionRule extends Group {
 
     private boolean triggered;
     // todo private Object windowStats;
-
 }

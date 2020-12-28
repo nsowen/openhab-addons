@@ -12,9 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal.model.common;
 
-import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
-
 import java.util.List;
+
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 
 /**
  * Homematic IP time profile period
@@ -32,5 +32,4 @@ public class TimeProfilePeriod extends HomematicIPObject {
     private String switchTimeMode; // todo enum
     private float dimLevel;
     private long rampTime;
-
 }

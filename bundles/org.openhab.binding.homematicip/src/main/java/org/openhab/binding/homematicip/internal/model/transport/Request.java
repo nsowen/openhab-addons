@@ -23,12 +23,12 @@ import java.util.StringJoiner;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class Request<T,V> {
+public class Request<T, V> {
 
     private T requestBody;
     private String url;
     private boolean authenticated = true;
-    private Map<String,String> additionalHeaders = new HashMap<>();
+    private Map<String, String> additionalHeaders = new HashMap<>();
     private long timeoutMillis = 5000L;
 
     public Request(String url, T requestBody, boolean authenticated) {
@@ -83,10 +83,13 @@ public class Request<T,V> {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Request<T,V> request = (Request<T,V>) o;
-        return authenticated == request.authenticated && Objects.equals(requestBody, request.requestBody) && Objects.equals(url, request.url) && Objects.equals(additionalHeaders, request.additionalHeaders);
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+        Request<T, V> request = (Request<T, V>) o;
+        return authenticated == request.authenticated && Objects.equals(requestBody, request.requestBody)
+                && Objects.equals(url, request.url) && Objects.equals(additionalHeaders, request.additionalHeaders);
     }
 
     @Override
@@ -96,12 +99,9 @@ public class Request<T,V> {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Request.class.getSimpleName() + "[", "]")
-                .add("requestBody=" + requestBody)
-                .add("url='" + url + "'")
-                .add("authenticated=" + authenticated)
-                .add("additionalHeaders=" + additionalHeaders)
-                .toString();
+        return new StringJoiner(", ", Request.class.getSimpleName() + "[", "]").add("requestBody=" + requestBody)
+                .add("url='" + url + "'").add("authenticated=" + authenticated)
+                .add("additionalHeaders=" + additionalHeaders).toString();
     }
 
     public long getTimeoutMillis() {

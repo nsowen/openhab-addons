@@ -34,5 +34,4 @@ public class ShutterProfile extends Group {
     protected double secondaryShadingLevel;
     protected ShadingStateType secondaryShadingStateType = ShadingStateType.NOT_EXISTENT;
     protected ProfileMode profileMode = ProfileMode.MANUAL;
-
 }

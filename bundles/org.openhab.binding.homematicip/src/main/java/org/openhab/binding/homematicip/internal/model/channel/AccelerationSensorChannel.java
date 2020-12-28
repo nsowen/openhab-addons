@@ -21,6 +21,4 @@ public class AccelerationSensorChannel extends FunctionalChannel {
     protected boolean accelerationSensorTriggered;
     protected NotificationSoundType notificationSoundTypeHighToLow = NotificationSoundType.SOUND_NO_SOUND;
     protected NotificationSoundType notificationSoundTypeLowToHigh = NotificationSoundType.SOUND_NO_SOUND;
-
-
 }

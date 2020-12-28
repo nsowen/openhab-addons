@@ -21,5 +21,4 @@ package org.openhab.binding.homematicip.internal.model.transport;
 public interface WebSocketListener<T> {
 
     void onReceive(T data);
-
 }

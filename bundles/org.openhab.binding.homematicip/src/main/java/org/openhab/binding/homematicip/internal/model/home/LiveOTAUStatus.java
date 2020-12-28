@@ -23,5 +23,4 @@ public class LiveOTAUStatus {
     private String liveOTAUState; // todo enum
     private float progress;
     private String deviceId;
-
 }

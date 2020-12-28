@@ -1,12 +1,12 @@
 package org.openhab.binding.homematicip.internal.model.home.functional;
 
-import org.openhab.binding.homematicip.internal.model.common.SecuritySwitchingGroupType;
-import org.openhab.binding.homematicip.internal.model.common.SecurityZoneActivationModeType;
-import org.openhab.binding.homematicip.internal.model.common.SecurityZoneType;
-
 import java.time.Instant;
 import java.util.Map;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.common.SecuritySwitchingGroupType;
+import org.openhab.binding.homematicip.internal.model.common.SecurityZoneActivationModeType;
+import org.openhab.binding.homematicip.internal.model.common.SecurityZoneType;
 
 /**
  * Security and alarm group
@@ -30,8 +30,8 @@ public class SecurityAndAlarm extends FunctionalHome {
     // todo private String intrusionAlarmEventDeviceChannel;
     // todo private String intrusionAlarmSecurityJournalEntryType;
     private boolean intrusionAlarmActive;
-    private Map<SecurityZoneType,String> securityZones;
-    private Map<SecuritySwitchingGroupType,String> securitySwitchingGroups;
+    private Map<SecurityZoneType, String> securityZones;
+    private Map<SecuritySwitchingGroupType, String> securitySwitchingGroups;
     private float zoneActivationDelay;
     private boolean intrusionAlertThroughSmokeDetectors;
     private SecurityZoneActivationModeType securityZoneActivationMode;
@@ -154,18 +154,15 @@ public class SecurityAndAlarm extends FunctionalHome {
         return new StringJoiner(", ", SecurityAndAlarm.class.getSimpleName() + "[", "]")
                 .add("alarmEventTimestamp=" + alarmEventTimestamp)
                 .add("alarmEventDeviceId='" + alarmEventDeviceId + "'")
-                .add("alarmEventTriggerId='" + alarmEventTriggerId + "'")
-                .add("alarmActive=" + alarmActive)
+                .add("alarmEventTriggerId='" + alarmEventTriggerId + "'").add("alarmActive=" + alarmActive)
                 .add("safetyAlarmEventTimestamp=" + safetyAlarmEventTimestamp)
                 .add("safetyAlarmActive=" + safetyAlarmActive)
                 .add("intrusionAlarmEventTimestamp=" + intrusionAlarmEventTimestamp)
-                .add("intrusionAlarmActive=" + intrusionAlarmActive)
-                .add("securityZones=" + securityZones)
+                .add("intrusionAlarmActive=" + intrusionAlarmActive).add("securityZones=" + securityZones)
                 .add("securitySwitchingGroups=" + securitySwitchingGroups)
                 .add("zoneActivationDelay=" + zoneActivationDelay)
                 .add("intrusionAlertThroughSmokeDetectors=" + intrusionAlertThroughSmokeDetectors)
                 .add("securityZoneActivationMode=" + securityZoneActivationMode)
-                .add("activationInProgress=" + activationInProgress)
-                .toString();
+                .add("activationInProgress=" + activationInProgress).toString();
     }
 }

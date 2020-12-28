@@ -12,15 +12,16 @@
  */
 package org.openhab.binding.homematicip.internal.model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import java.time.Instant;
+
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.group.Group;
 import org.openhab.binding.homematicip.internal.model.gson.*;
 import org.openhab.binding.homematicip.internal.model.home.functional.FunctionalHome;
 
-import java.time.Instant;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * Generic object
@@ -45,5 +46,4 @@ public abstract class HomematicIPObject {
     public static HomematicIPObject fromJson(String json, Class<? extends HomematicIPObject> clazz) {
         return gson.fromJson(json, clazz);
     }
-
 }

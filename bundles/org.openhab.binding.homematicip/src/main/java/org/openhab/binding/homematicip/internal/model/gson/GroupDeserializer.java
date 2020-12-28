@@ -12,12 +12,13 @@
  */
 package org.openhab.binding.homematicip.internal.model.gson;
 
-import com.google.gson.*;
+import java.lang.reflect.Type;
+
 import org.openhab.binding.homematicip.internal.model.common.GroupType;
 import org.openhab.binding.homematicip.internal.model.group.GenericGroup;
 import org.openhab.binding.homematicip.internal.model.group.Group;
 
-import java.lang.reflect.Type;
+import com.google.gson.*;
 
 /**
  * Deserialize group / polymorphism by type
@@ -28,7 +29,8 @@ import java.lang.reflect.Type;
 public class GroupDeserializer implements JsonDeserializer<Group> {
 
     @Override
-    public Group deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public Group deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
+            throws JsonParseException {
         JsonObject obj = jsonElement.getAsJsonObject();
         String typeString = obj.get("type").getAsString();
         var groupType = GroupType.valueOf(typeString);

@@ -33,5 +33,4 @@ public class AuthIsRequestAcknowledgedRequest {
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
     }
-
 }

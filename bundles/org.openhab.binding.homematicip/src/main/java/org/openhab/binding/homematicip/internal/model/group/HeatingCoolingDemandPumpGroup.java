@@ -25,5 +25,4 @@ public class HeatingCoolingDemandPumpGroup extends Group {
     protected long pumpFollowUpTime;
     protected long pumpLeadTime;
     protected boolean on;
-
 }

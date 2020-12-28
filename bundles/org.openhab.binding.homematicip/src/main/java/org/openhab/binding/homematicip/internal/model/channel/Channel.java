@@ -12,5 +12,4 @@ public class Channel extends HomematicIPObject {
 
     private int channelIndex;
     private String deviceId;
-
 }

@@ -12,13 +12,13 @@
  */
 package org.openhab.binding.homematicip.internal.model.home.functional;
 
-import org.openhab.binding.homematicip.internal.model.common.AbsenceType;
-import org.openhab.binding.homematicip.internal.model.common.EcoDuration;
-import org.openhab.binding.homematicip.internal.model.common.GroupType;
-
 import java.time.Instant;
 import java.util.Map;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.common.AbsenceType;
+import org.openhab.binding.homematicip.internal.model.common.EcoDuration;
+import org.openhab.binding.homematicip.internal.model.common.GroupType;
 
 /**
  * Indoor climate functional home
@@ -30,7 +30,7 @@ public class IndoorClimate extends FunctionalHome {
 
     private AbsenceType absenceType;
     private Instant absenceEndTime;
-    private Map<GroupType,String> floorHeatingSpecificGroups;
+    private Map<GroupType, String> floorHeatingSpecificGroups;
     private float ecoTemperature;
     private boolean coolingEnabled;
     private EcoDuration ecoDuration;
@@ -94,14 +94,9 @@ public class IndoorClimate extends FunctionalHome {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", IndoorClimate.class.getSimpleName() + "[", "]")
-                .add("absenceType=" + absenceType)
-                .add("absenceEndTime=" + absenceEndTime)
-                .add("floorHeatingSpecificGroups=" + floorHeatingSpecificGroups)
-                .add("ecoTemperature=" + ecoTemperature)
-                .add("coolingEnabled=" + coolingEnabled)
-                .add("ecoDuration=" + ecoDuration)
-                .add("optimumStartStopEnabled=" + optimumStartStopEnabled)
-                .toString();
+        return new StringJoiner(", ", IndoorClimate.class.getSimpleName() + "[", "]").add("absenceType=" + absenceType)
+                .add("absenceEndTime=" + absenceEndTime).add("floorHeatingSpecificGroups=" + floorHeatingSpecificGroups)
+                .add("ecoTemperature=" + ecoTemperature).add("coolingEnabled=" + coolingEnabled)
+                .add("ecoDuration=" + ecoDuration).add("optimumStartStopEnabled=" + optimumStartStopEnabled).toString();
     }
 }

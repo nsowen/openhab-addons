@@ -21,5 +21,4 @@ package org.openhab.binding.homematicip.internal.model.group;
 public class SmokeAlarmDetectionRule extends Group {
 
     private String smokeDetectorAlarmType;
-
 }

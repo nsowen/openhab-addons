@@ -24,5 +24,4 @@ public class SwitchGroupBase extends Group {
     protected float dimLevel;
     protected boolean dutyCycle;
     protected boolean lowBat;
-
 }

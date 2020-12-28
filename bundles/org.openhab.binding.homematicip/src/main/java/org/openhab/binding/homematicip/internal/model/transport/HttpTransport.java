@@ -12,10 +12,19 @@
  */
 package org.openhab.binding.homematicip.internal.model.transport;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
+import java.io.IOException;
+import java.io.StringReader;
+import java.net.HttpCookie;
+import java.net.URI;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentProvider;
 import org.eclipse.jetty.client.api.ContentResponse;
@@ -28,16 +37,9 @@ import org.openhab.core.io.net.http.WebSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.net.HttpCookie;
-import java.net.URI;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
 
 /**
  * Default implementation using Java's URLConnection
@@ -75,16 +77,22 @@ public class HttpTransport implements Transport {
         this.defaultHeaders.put(key, value);
     }
 
-
-
     @Override
     public void setClientAuth(String clientAuth) {
         setDefaultHeader(HEADER_CLIENTAUTH, clientAuth);
     }
 
     @Override
-    public void setAuthToken(String authToken) {
-        setDefaultHeader(HEADER_AUTHTOKEN, authToken);
+    public void setAuthToken(@Nullable String authToken) {
+        if (authToken == null) {
+            removeDefaultHeader(HEADER_AUTHTOKEN);
+        } else {
+            setDefaultHeader(HEADER_AUTHTOKEN, authToken);
+        }
+    }
+
+    private void removeDefaultHeader(String header) {
+        defaultHeaders.remove(header);
     }
 
     @Override
@@ -93,7 +101,8 @@ public class HttpTransport implements Transport {
     }
 
     @Override
-    public <T, V> CompletableFuture<Response<T, V>> postAsync(Request<T, V> request, Class<V> clazz, Executor executor) {
+    public <T, V> CompletableFuture<Response<T, V>> postAsync(Request<T, V> request, Class<V> clazz,
+            Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return post(request, clazz);
@@ -115,8 +124,7 @@ public class HttpTransport implements Transport {
                 throw new IllegalStateException("Cannot perform authenticated requests without AUTHTOKEN");
             }
             final var body = gson.toJson(request.getRequestBody());
-            var httpRequest = client.newRequest(request.getUrl())
-                    .method(HttpMethod.POST);
+            var httpRequest = client.newRequest(request.getUrl()).method(HttpMethod.POST);
             if (body != null && body.length() > 0) {
                 httpRequest.content(new StringContentProvider(gson.toJson(request.getRequestBody())));
             }
@@ -160,43 +168,36 @@ public class HttpTransport implements Transport {
             addListeners(this.delegate);
         }
 
-        private void addListeners(org.eclipse.jetty.client.api.Request request)
-        {
+        private void addListeners(org.eclipse.jetty.client.api.Request request) {
             long id = nextId.getAndIncrement();
             StringBuilder group = new StringBuilder();
-            request.onRequestBegin(theRequest -> group.append("Request " + id + "\n" +
-                    id + " > " + theRequest.getMethod() + " " + theRequest.getURI() + "\n"));
-            request.onRequestHeaders(theRequest ->
-            {
+            request.onRequestBegin(theRequest -> group.append(
+                    "Request " + id + "\n" + id + " > " + theRequest.getMethod() + " " + theRequest.getURI() + "\n"));
+            request.onRequestHeaders(theRequest -> {
                 for (HttpField header : theRequest.getHeaders())
                     group.append(id + " > " + header + "\n");
             });
 
             StringBuilder contentBuffer = new StringBuilder();
-            request.onRequestContent((theRequest, content) ->
-                    contentBuffer.append(new String(content.array(), getCharset(theRequest.getHeaders()))));
-            request.onRequestSuccess(theRequest ->
-            {
-                if (contentBuffer.length() > 0)
-                {
-                    group.append("\n" +
-                            contentBuffer.toString());
+            request.onRequestContent((theRequest, content) -> contentBuffer
+                    .append(new String(content.array(), getCharset(theRequest.getHeaders()))));
+            request.onRequestSuccess(theRequest -> {
+                if (contentBuffer.length() > 0) {
+                    group.append("\n" + contentBuffer.toString());
                 }
                 log.debug(group.toString());
                 contentBuffer.delete(0, contentBuffer.length());
                 group.delete(0, group.length());
             });
 
-            request.onResponseBegin(theResponse ->
-            {
-                group.append("Response " + id + "\n" +
-                        id + " < " + theResponse.getVersion() + " " + theResponse.getStatus());
+            request.onResponseBegin(theResponse -> {
+                group.append("Response " + id + "\n" + id + " < " + theResponse.getVersion() + " "
+                        + theResponse.getStatus());
                 if (theResponse.getReason() != null)
                     group.append(" " + theResponse.getReason());
                 group.append("\n");
             });
-            request.onResponseHeaders(theResponse ->
-            {
+            request.onResponseHeaders(theResponse -> {
                 for (HttpField header : theResponse.getHeaders())
                     group.append(id + " < " + header + "\n");
             });
@@ -212,12 +213,9 @@ public class HttpTransport implements Transport {
                     contentBuffer.append(new String(bytes, getCharset(theResponse.getHeaders())));
                 }
             });
-            request.onResponseSuccess(theResponse ->
-            {
-                if (contentBuffer.length() > 0)
-                {
-                    group.append("\n" +
-                            contentBuffer.toString());
+            request.onResponseSuccess(theResponse -> {
+                if (contentBuffer.length() > 0) {
+                    group.append("\n" + contentBuffer.toString());
                 }
                 log.debug(group.toString());
             });
@@ -227,8 +225,7 @@ public class HttpTransport implements Transport {
          * @param headers HTTP headers
          * @return the charset associated with the request or response body
          */
-        private Charset getCharset(HttpFields headers)
-        {
+        private Charset getCharset(HttpFields headers) {
             String contentType = headers.get(HttpHeader.CONTENT_TYPE);
             if (contentType == null) {
                 return StandardCharsets.UTF_8;
@@ -467,42 +464,50 @@ public class HttpTransport implements Transport {
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onResponseBegin(org.eclipse.jetty.client.api.Response.BeginListener beginListener) {
+        public org.eclipse.jetty.client.api.Request onResponseBegin(
+                org.eclipse.jetty.client.api.Response.BeginListener beginListener) {
             return delegate.onResponseBegin(beginListener);
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onResponseHeader(org.eclipse.jetty.client.api.Response.HeaderListener headerListener) {
+        public org.eclipse.jetty.client.api.Request onResponseHeader(
+                org.eclipse.jetty.client.api.Response.HeaderListener headerListener) {
             return delegate.onResponseHeader(headerListener);
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onResponseHeaders(org.eclipse.jetty.client.api.Response.HeadersListener headersListener) {
+        public org.eclipse.jetty.client.api.Request onResponseHeaders(
+                org.eclipse.jetty.client.api.Response.HeadersListener headersListener) {
             return delegate.onResponseHeaders(headersListener);
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onResponseContent(org.eclipse.jetty.client.api.Response.ContentListener contentListener) {
+        public org.eclipse.jetty.client.api.Request onResponseContent(
+                org.eclipse.jetty.client.api.Response.ContentListener contentListener) {
             return delegate.onResponseContent(contentListener);
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onResponseContentAsync(org.eclipse.jetty.client.api.Response.AsyncContentListener asyncContentListener) {
+        public org.eclipse.jetty.client.api.Request onResponseContentAsync(
+                org.eclipse.jetty.client.api.Response.AsyncContentListener asyncContentListener) {
             return delegate.onResponseContentAsync(asyncContentListener);
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onResponseSuccess(org.eclipse.jetty.client.api.Response.SuccessListener successListener) {
+        public org.eclipse.jetty.client.api.Request onResponseSuccess(
+                org.eclipse.jetty.client.api.Response.SuccessListener successListener) {
             return delegate.onResponseSuccess(successListener);
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onResponseFailure(org.eclipse.jetty.client.api.Response.FailureListener failureListener) {
+        public org.eclipse.jetty.client.api.Request onResponseFailure(
+                org.eclipse.jetty.client.api.Response.FailureListener failureListener) {
             return delegate.onResponseFailure(failureListener);
         }
 
         @Override
-        public org.eclipse.jetty.client.api.Request onComplete(org.eclipse.jetty.client.api.Response.CompleteListener completeListener) {
+        public org.eclipse.jetty.client.api.Request onComplete(
+                org.eclipse.jetty.client.api.Response.CompleteListener completeListener) {
             return delegate.onComplete(completeListener);
         }
 

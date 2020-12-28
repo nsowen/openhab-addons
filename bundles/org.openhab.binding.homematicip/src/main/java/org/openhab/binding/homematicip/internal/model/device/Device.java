@@ -12,15 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
-import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
-import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
-import org.openhab.binding.homematicip.internal.model.common.ConnectionType;
-import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateState;
-
 import java.time.Instant;
 import java.util.Map;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
+import org.openhab.binding.homematicip.internal.model.common.ConnectionType;
+import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateState;
 
 /**
  * Abstract Homematic IP device
@@ -52,25 +52,16 @@ public abstract class Device extends HomematicIPObject {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Device.class.getSimpleName() + "[", "]")
-                .add("id='" + id + "'")
-                .add("homeId='" + homeId + "'")
-                .add("label='" + label + "'")
-                .add("lastStatusUpdate=" + lastStatusUpdate)
-                .add("manufacturerCode=" + manufacturerCode)
-                .add("oem='" + oem + "'")
-                .add("firmwareVersionInteger=" + firmwareVersionInteger)
-                .add("updateState=" + updateState)
-                .add("firmwareVersion='" + firmwareVersion + "'")
-                .add("connectionType=" + connectionType)
-                .add("modelId=" + modelId)
-                .add("modelType='" + modelType + "'")
+        return new StringJoiner(", ", Device.class.getSimpleName() + "[", "]").add("id='" + id + "'")
+                .add("homeId='" + homeId + "'").add("label='" + label + "'").add("lastStatusUpdate=" + lastStatusUpdate)
+                .add("manufacturerCode=" + manufacturerCode).add("oem='" + oem + "'")
+                .add("firmwareVersionInteger=" + firmwareVersionInteger).add("updateState=" + updateState)
+                .add("firmwareVersion='" + firmwareVersion + "'").add("connectionType=" + connectionType)
+                .add("modelId=" + modelId).add("modelType='" + modelType + "'")
                 .add("serializedGlobalTradeItemNumber='" + serializedGlobalTradeItemNumber + "'")
                 .add("deviceType='" + deviceType + "'")
                 .add("availableFirmwareVersion='" + availableFirmwareVersion + "'")
-                .add("permanentlyReachable=" + permanentlyReachable)
-                .add("functionalChannels=" + functionalChannels)
-                .add("baseChannel=" + baseChannel)
-                .toString();
+                .add("permanentlyReachable=" + permanentlyReachable).add("functionalChannels=" + functionalChannels)
+                .add("baseChannel=" + baseChannel).toString();
     }
 }

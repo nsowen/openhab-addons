@@ -26,5 +26,4 @@ public class HotWaterGroup extends Group {
     private double onTime;
     // todo private Object profileId;
     private ProfileMode profileMode = ProfileMode.MANUAL;
-
 }

@@ -29,5 +29,4 @@ public class MetaGroup extends Group {
     private String incorrectPositioned; // todo type
     private List<String> groups;
     private String groupIcon;
-
 }

@@ -1,8 +1,8 @@
 package org.openhab.binding.homematicip.internal.model.home;
 
-import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateState;
-
 import java.time.Instant;
+
+import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateState;
 
 /**
  * Access Point Status Update
@@ -15,5 +15,4 @@ public class AccessPointStatusUpdate {
     private Instant successfulUpdateTimestamp;
     private Instant updateStateChangedTimestamp;
     private DeviceUpdateState accessPointUpdateState;
-
 }

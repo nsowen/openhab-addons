@@ -12,10 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal.model.common;
 
-import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
-
-import java.util.List;
 import java.util.Map;
+
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 
 /**
  * Homematic IP heating cooling stuff
@@ -33,6 +32,5 @@ public class HeatingCoolingProfile extends HomematicIPObject {
     private boolean enabled;
     private String name;
     private String type;
-    private Map<String,HeatingCoolingProfileDay> profileDays;
-
+    private Map<String, HeatingCoolingProfileDay> profileDays;
 }

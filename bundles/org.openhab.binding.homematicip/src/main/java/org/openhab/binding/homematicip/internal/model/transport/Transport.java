@@ -12,16 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.transport;
 
-import org.bouncycastle.jcajce.provider.digest.SHA512;
-import org.eclipse.jdt.annotation.NonNullByDefault;
-import org.eclipse.jetty.server.session.SessionHandler;
-
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+
+import org.eclipse.jdt.annotation.NonNullByDefault;
+import org.eclipse.jdt.annotation.Nullable;
 
 /**
  * Transport layer
@@ -41,19 +40,22 @@ public interface Transport {
 
     void setClientAuth(String clientAuth);
 
-    void setAuthToken(String authToken);
+    void setAuthToken(@Nullable String authToken);
 
     boolean hasAuthToken();
 
-    <T, V> CompletableFuture<Response<T,V>> postAsync(Request<T,V> request, Class<V> clazz, Executor executor);
+    <T, V> CompletableFuture<Response<T, V>> postAsync(Request<T, V> request, Class<V> clazz, Executor executor);
 
-    <T, V> Response<T,V> post(Request<T,V> request, Class<V> clazz) throws IOException;
+    <T, V> Response<T, V> post(Request<T, V> request, Class<V> clazz) throws IOException;
 
     <U> void enableWebSocket(String wssUrl, WebSocketListener<U> listener);
 
     void disableWebSocket();
 
-    default void setAccessPointId(String accessPointId) throws NoSuchAlgorithmException {
+    default void setAccessPointId(@Nullable String accessPointId) throws NoSuchAlgorithmException {
+        if (accessPointId == null) {
+            return;
+        }
         setClientAuth(sha512(accessPointId, CLIENTAUTH_HASH_SALT).toUpperCase());
     }
 
@@ -62,10 +64,9 @@ public interface Transport {
         md.update(text.getBytes(StandardCharsets.UTF_8));
         final var bytes = md.digest(salt.getBytes(StandardCharsets.UTF_8));
         final var sb = new StringBuilder();
-        for(int i=0; i< bytes.length ;i++) {
+        for (int i = 0; i < bytes.length; i++) {
             sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
         }
         return sb.toString();
     }
-
 }

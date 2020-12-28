@@ -12,11 +12,11 @@
  */
 package org.openhab.binding.homematicip.internal.model.group;
 
-import org.openhab.binding.homematicip.internal.model.common.ClimateControlMode;
-import org.openhab.binding.homematicip.internal.model.common.HeatingCoolingProfile;
-
 import java.time.Instant;
 import java.util.Map;
+
+import org.openhab.binding.homematicip.internal.model.common.ClimateControlMode;
+import org.openhab.binding.homematicip.internal.model.common.HeatingCoolingProfile;
 
 /**
  * Group-specific implementation
@@ -60,5 +60,4 @@ public class HeatingGroup extends Group {
     private boolean valveSilentModeSupported;
     private Instant lastSetPointReachedTimestamp;
     private Instant lastSetPointUpdatedTimestamp;
-
 }

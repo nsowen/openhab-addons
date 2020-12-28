@@ -25,5 +25,4 @@ public class VoiceControlSettings {
     private String language;
     private List<String> allowedActiveSecurityZoneIds;
     // todo stateReportEnabled {}
-    
 }

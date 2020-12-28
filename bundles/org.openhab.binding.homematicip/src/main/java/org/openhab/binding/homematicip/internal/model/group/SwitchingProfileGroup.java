@@ -25,5 +25,4 @@ public class SwitchingProfileGroup extends Group {
     private boolean on;
     private float dimLevel;
     private ProfileMode profileMode = ProfileMode.MANUAL;
-
 }

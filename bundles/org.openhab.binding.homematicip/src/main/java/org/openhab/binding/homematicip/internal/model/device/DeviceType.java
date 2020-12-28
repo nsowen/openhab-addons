@@ -91,5 +91,4 @@ public enum DeviceType {
     public Class<? extends Device> getClazz() {
         return clazz;
     }
-
 }

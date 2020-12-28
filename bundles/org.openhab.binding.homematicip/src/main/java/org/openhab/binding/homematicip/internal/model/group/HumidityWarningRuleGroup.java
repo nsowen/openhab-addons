@@ -12,9 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal.model.group;
 
-import org.openhab.binding.homematicip.internal.model.common.HumidityValidationType;
-
 import java.time.Instant;
+
+import org.openhab.binding.homematicip.internal.model.common.HumidityValidationType;
 
 /**
  * Group-specific implementation

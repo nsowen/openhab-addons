@@ -12,14 +12,13 @@
  */
 package org.openhab.binding.homematicip.internal.model.gson;
 
-import com.google.gson.*;
+import java.lang.reflect.Type;
+
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-import org.openhab.binding.homematicip.internal.model.device.Device;
-import org.openhab.binding.homematicip.internal.model.device.DeviceType;
 import org.openhab.binding.homematicip.internal.model.group.GenericGroup;
 
-import java.lang.reflect.Type;
+import com.google.gson.*;
 
 /**
  * Deserialize device / polymorphism by type
@@ -30,7 +29,8 @@ import java.lang.reflect.Type;
 public class FunctionalChannelDeserializer implements JsonDeserializer<FunctionalChannel> {
 
     @Override
-    public FunctionalChannel deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public FunctionalChannel deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
+            throws JsonParseException {
         JsonObject obj = jsonElement.getAsJsonObject();
         String typeString = obj.get("functionalChannelType").getAsString();
         var functionalChannelType = FunctionalChannelType.valueOf(typeString);

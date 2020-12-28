@@ -25,5 +25,4 @@ public class HeatingCoolingPeriod extends HomematicIPObject {
     private String starttime;
     private String endtime;
     private String value;
-
 }

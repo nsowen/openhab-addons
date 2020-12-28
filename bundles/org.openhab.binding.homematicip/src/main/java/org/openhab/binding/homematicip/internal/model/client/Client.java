@@ -12,11 +12,11 @@
  */
 package org.openhab.binding.homematicip.internal.model.client;
 
-import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
-import org.openhab.binding.homematicip.internal.model.common.ClientType;
-
 import java.time.Instant;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.common.ClientType;
 
 /**
  * Homematic IP API Client
@@ -67,13 +67,9 @@ public class Client extends HomematicIPObject {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Client.class.getSimpleName() + "[", "]")
-                .add("clientType=" + clientType)
-                .add("id='" + id + "'")
-                .add("label='" + label + "'")
-                .add("homeId='" + homeId + "'")
-                .add("createdAtTimestamp=" + createdAtTimestamp)
-                .add("lastSeenAtTimestamp=" + lastSeenAtTimestamp)
+        return new StringJoiner(", ", Client.class.getSimpleName() + "[", "]").add("clientType=" + clientType)
+                .add("id='" + id + "'").add("label='" + label + "'").add("homeId='" + homeId + "'")
+                .add("createdAtTimestamp=" + createdAtTimestamp).add("lastSeenAtTimestamp=" + lastSeenAtTimestamp)
                 .toString();
     }
 }

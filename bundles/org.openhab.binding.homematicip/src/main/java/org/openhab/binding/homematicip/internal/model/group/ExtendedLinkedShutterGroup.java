@@ -13,7 +13,6 @@
 package org.openhab.binding.homematicip.internal.model.group;
 
 import org.openhab.binding.homematicip.internal.model.common.GroupVisibility;
-import org.openhab.binding.homematicip.internal.model.common.ProfileMode;
 import org.openhab.binding.homematicip.internal.model.common.ShadingStateType;
 
 /**
@@ -36,5 +35,4 @@ public class ExtendedLinkedShutterGroup extends Group {
     protected double secondaryShadingLevel;
     protected ShadingStateType secondaryShadingStateType = ShadingStateType.NOT_EXISTENT;
     protected GroupVisibility groupVisibility = GroupVisibility.INVISIBLE_GROUP_AND_CONTROL;
-
 }

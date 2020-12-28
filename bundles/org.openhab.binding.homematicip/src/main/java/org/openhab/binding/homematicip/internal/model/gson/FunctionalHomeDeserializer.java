@@ -12,12 +12,13 @@
  */
 package org.openhab.binding.homematicip.internal.model.gson;
 
-import com.google.gson.*;
+import java.lang.reflect.Type;
+
 import org.openhab.binding.homematicip.internal.model.common.FunctionalHomeType;
 import org.openhab.binding.homematicip.internal.model.home.functional.FunctionalHome;
 import org.openhab.binding.homematicip.internal.model.home.functional.GenericFunctionalHome;
 
-import java.lang.reflect.Type;
+import com.google.gson.*;
 
 /**
  * Deserialize functional homes by solution
@@ -28,7 +29,8 @@ import java.lang.reflect.Type;
 public class FunctionalHomeDeserializer implements JsonDeserializer<FunctionalHome> {
 
     @Override
-    public FunctionalHome deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context) throws JsonParseException {
+    public FunctionalHome deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
+            throws JsonParseException {
         JsonObject obj = jsonElement.getAsJsonObject();
         String typeString = obj.get("solution").getAsString();
         var objType = FunctionalHomeType.valueOf(typeString);

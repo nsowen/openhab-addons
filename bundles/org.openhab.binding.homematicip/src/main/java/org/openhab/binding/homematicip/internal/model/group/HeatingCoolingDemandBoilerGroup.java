@@ -24,5 +24,4 @@ public class HeatingCoolingDemandBoilerGroup extends Group {
     private long boilerLeadTime;
     private boolean on;
     private float dimLevel;
-
 }

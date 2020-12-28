@@ -12,12 +12,11 @@
  */
 package org.openhab.binding.homematicip.internal.model.group;
 
-import org.openhab.binding.homematicip.internal.model.channel.Channel;
-
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.channel.Channel;
 
 /**
  * New class.
@@ -38,15 +37,9 @@ public abstract class Group {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", Group.class.getSimpleName() + "[", "]")
-                .add("id='" + id + "'")
-                .add("homeId='" + homeId + "'")
-                .add("metaGroupId='" + metaGroupId + "'")
-                .add("label='" + label + "'")
-                .add("lastStatusUpdate=" + lastStatusUpdate)
-                .add("unreach='" + unreach + "'")
-                .add("type='" + type + "'")
-                .add("channels=" + channels)
-                .toString();
+        return new StringJoiner(", ", Group.class.getSimpleName() + "[", "]").add("id='" + id + "'")
+                .add("homeId='" + homeId + "'").add("metaGroupId='" + metaGroupId + "'").add("label='" + label + "'")
+                .add("lastStatusUpdate=" + lastStatusUpdate).add("unreach='" + unreach + "'").add("type='" + type + "'")
+                .add("channels=" + channels).toString();
     }
 }

@@ -23,5 +23,4 @@ public class ExtendedLinkedSwitchingGroup extends SwitchGroupBase {
     private long onTime;
     private long onLevel;
     // todo private Object sensorSpecificParameters;
-
 }

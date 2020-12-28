@@ -31,5 +31,4 @@ public class Weather {
     private double windSpeed;
     private int windDirection;
     private double vaporAmount;
-
 }
