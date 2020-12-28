@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.request;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 /**
  * Request authorization for new app
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class AuthRequestTokenRequest {
+public class AuthRequestTokenRequest extends HomematicIPObject {
 
     private String deviceId;
 

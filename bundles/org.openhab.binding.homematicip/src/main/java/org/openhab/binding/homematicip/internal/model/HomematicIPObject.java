@@ -12,6 +12,7 @@
  */
 package org.openhab.binding.homematicip.internal.model;
 
+import java.io.Reader;
 import java.time.Instant;
 
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
@@ -29,7 +30,7 @@ import com.google.gson.GsonBuilder;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public abstract class HomematicIPObject {
+public class HomematicIPObject {
 
     protected final static Gson gson;
 
@@ -45,5 +46,13 @@ public abstract class HomematicIPObject {
 
     public static HomematicIPObject fromJson(String json, Class<? extends HomematicIPObject> clazz) {
         return gson.fromJson(json, clazz);
+    }
+
+    public static HomematicIPObject fromJson(Reader json, Class<? extends HomematicIPObject> clazz) {
+        return gson.fromJson(json, clazz);
+    }
+
+    public static String toJson(Object object) {
+        return gson.toJson(object);
     }
 }

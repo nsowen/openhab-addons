@@ -24,6 +24,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.request.*;
 import org.openhab.binding.homematicip.internal.model.response.AuthConfirmTokenResponse;
 import org.openhab.binding.homematicip.internal.model.response.AuthRequestTokenResponse;
@@ -197,9 +198,9 @@ public class HomematicIPConnection {
      * @throws IOException in case of I/O error
      */
     public void authConnectionRequest() throws IOException {
-        final var request = new Request<AuthConnectionRequest, Void>(restUrl("/hmip/auth/connectionRequest"),
+        final var request = new Request<AuthConnectionRequest, HomematicIPObject>(restUrl("/hmip/auth/connectionRequest"),
                 new AuthConnectionRequest(uuid, "OpenHAB Homematic IP", accessPointId), false);
-        final var response = transport.post(request, Void.class);
+        final var response = transport.post(request, HomematicIPObject.class);
         if (response.getStatusCode() != 200) {
             throw new IOException("Unexpected response for authConnectionRequest: " + response);
         }
@@ -212,9 +213,9 @@ public class HomematicIPConnection {
      * @throws IOException in case of I/O error
      */
     public boolean authIsRequestAcknowledgedRequest() throws IOException {
-        final var request = new Request<AuthIsRequestAcknowledgedRequest, Void>(
+        final var request = new Request<AuthIsRequestAcknowledgedRequest, HomematicIPObject>(
                 restUrl("/hmip/auth/isRequestAcknowledged"), new AuthIsRequestAcknowledgedRequest(uuid), false);
-        final var response = transport.post(request, Void.class);
+        final var response = transport.post(request, HomematicIPObject.class);
         switch (response.getStatusCode()) {
             case 200:
                 return true;

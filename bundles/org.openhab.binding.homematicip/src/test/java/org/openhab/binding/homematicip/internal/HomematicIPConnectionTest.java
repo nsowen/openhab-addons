@@ -46,7 +46,7 @@ class HomematicIPConnectionTest {
 
     @Test
     void testHome() throws ExecutionException, InterruptedException {
-        // this.connection.getCurrentState(scheduler).get();
+        this.connection.getCurrentState(scheduler).get();
     }
 
     @Test

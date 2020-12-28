@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.request;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 /**
  * Lookup access point using HmIP-API
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-25
  */
-public class LookupRequest {
+public class LookupRequest extends HomematicIPObject {
 
     private ClientCharacteristics clientCharacteristics;
     private String id;

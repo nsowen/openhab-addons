@@ -12,13 +12,15 @@
  */
 package org.openhab.binding.homematicip.internal.model.request;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 /**
  * Get current home state using HmIP-API
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-25
  */
-public class GetCurrentStateRequest {
+public class GetCurrentStateRequest extends HomematicIPObject {
 
     private ClientCharacteristics clientCharacteristics;
     private String id;
