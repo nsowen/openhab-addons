@@ -10,7 +10,7 @@
  * <p>
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model.transport;
+package org.openhab.binding.homematicip.internal.transport;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -46,6 +46,7 @@ public class HttpTransport implements Transport {
 
     /**
      * Creates a new http transport based on OpenHABs primary {@link HttpClientFactory HttpClientFactory}
+     * 
      * @param httpClientFactory client factory given by OpenHAB
      * @param webSocketFactory web socket factory given by OpenHAB
      */
@@ -66,6 +67,7 @@ public class HttpTransport implements Transport {
 
     /**
      * Adds data to the default header map used in each request
+     * 
      * @param key name of header
      * @param value value of header
      */
@@ -75,6 +77,7 @@ public class HttpTransport implements Transport {
 
     /**
      * Removes header from default header map (used in each request)
+     * 
      * @param header header name
      */
     private void removeDefaultHeader(String header) {
@@ -101,8 +104,8 @@ public class HttpTransport implements Transport {
     }
 
     @Override
-    public <T extends HomematicIPObject, V extends HomematicIPObject> CompletableFuture<Response<T, V>> postAsync(Request<T, V> request, Class<V> clazz,
-            Executor executor) {
+    public <T extends HomematicIPObject, V extends HomematicIPObject> CompletableFuture<Response<T, V>> postAsync(
+            Request<T, V> request, Class<V> clazz, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return post(request, clazz);
@@ -113,7 +116,8 @@ public class HttpTransport implements Transport {
     }
 
     @Override
-    public <T extends HomematicIPObject, V extends HomematicIPObject> Response<T, V> post(Request<T, V> request, Class<V> clazz) throws IOException {
+    public <T extends HomematicIPObject, V extends HomematicIPObject> Response<T, V> post(Request<T, V> request,
+            Class<V> clazz) throws IOException {
         final var start = System.currentTimeMillis();
         final var response = new Response();
         response.setStatusCode(501);
@@ -156,5 +160,4 @@ public class HttpTransport implements Transport {
     @Override
     public void disableWebSocket() {
     }
-
 }

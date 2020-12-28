@@ -14,10 +14,10 @@ package org.openhab.binding.homematicip.internal;
 
 import static org.openhab.binding.homematicip.internal.HomematicIPBindingConstants.*;
 
-import java.util.Set;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.homematicip.internal.handler.HomematicIPBridgeHandler;
+import org.openhab.binding.homematicip.internal.handler.HomematicIPThingHandler;
 import org.openhab.core.config.core.Configuration;
 import org.openhab.core.i18n.TimeZoneProvider;
 import org.openhab.core.io.net.http.HttpClientFactory;
@@ -43,7 +43,6 @@ import org.osgi.service.component.annotations.Reference;
 @Component(configurationPid = "binding.homematicip", service = ThingHandlerFactory.class)
 public class HomematicIPHandlerFactory extends BaseThingHandlerFactory {
 
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_BRIDGE);
     private final HttpClientFactory httpClientFactory;
     private final WebSocketFactory webSocketFactory;
     private final TimeZoneProvider timeZoneProvider;
@@ -58,7 +57,8 @@ public class HomematicIPHandlerFactory extends BaseThingHandlerFactory {
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
-        return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
+        return HomematicIPBridgeHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID)
+                || HomematicIPThingHandler.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
     }
 
     @Override

@@ -10,14 +10,7 @@
  * <p>
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model.transport;
-
-import org.eclipse.jetty.client.api.ContentProvider;
-import org.eclipse.jetty.client.api.ContentResponse;
-import org.eclipse.jetty.http.*;
-import org.eclipse.jetty.util.Fields;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+package org.openhab.binding.homematicip.internal.transport;
 
 import java.io.IOException;
 import java.net.HttpCookie;
@@ -33,6 +26,13 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.eclipse.jetty.client.api.ContentProvider;
+import org.eclipse.jetty.client.api.ContentResponse;
+import org.eclipse.jetty.http.*;
+import org.eclipse.jetty.util.Fields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Custom logger wrapper used for logging each HTTP request within
@@ -60,8 +60,8 @@ public class LoggingHttpRequest implements org.eclipse.jetty.client.api.Request 
         });
 
         var payload = new StringBuilder();
-        request.onRequestContent((request0, content) -> payload
-                .append(new String(content.array(), getCharset(request0.getHeaders()))));
+        request.onRequestContent(
+                (request0, content) -> payload.append(new String(content.array(), getCharset(request0.getHeaders()))));
         request.onRequestSuccess(request0 -> {
             if (payload.length() > 0) {
                 output.append("\n" + payload.toString());

@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.openhab.binding.homematicip.internal.model.transport.HttpTransport;
+import org.openhab.binding.homematicip.internal.transport.HttpTransport;
 import org.openhab.core.io.net.http.internal.ExtensibleTrustManagerImpl;
 import org.openhab.core.io.net.http.internal.WebClientFactoryImpl;
 

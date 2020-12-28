@@ -30,8 +30,8 @@ import org.openhab.binding.homematicip.internal.model.response.AuthConfirmTokenR
 import org.openhab.binding.homematicip.internal.model.response.AuthRequestTokenResponse;
 import org.openhab.binding.homematicip.internal.model.response.GetCurrentStateResponse;
 import org.openhab.binding.homematicip.internal.model.response.LookupResponse;
-import org.openhab.binding.homematicip.internal.model.transport.Request;
-import org.openhab.binding.homematicip.internal.model.transport.Transport;
+import org.openhab.binding.homematicip.internal.transport.Request;
+import org.openhab.binding.homematicip.internal.transport.Transport;
 
 /**
  * Class representing an online connection to the Homematic IP Service
@@ -89,6 +89,7 @@ public class HomematicIPConnection {
     /**
      * Check if this connection can be used for a pairing request (lookup was successful and no secret
      * auth token has been set yet)
+     * 
      * @return true if device is ready for pairing
      */
     public boolean isReadyForPairing() {
@@ -98,6 +99,7 @@ public class HomematicIPConnection {
     /**
      * Check if this connection has both a successful lookup and a valid secret auth token set. The
      * validity of the auth token has not been checked here.
+     * 
      * @return true if device is ready for use
      */
     public boolean isReadyForUse() {
@@ -106,6 +108,7 @@ public class HomematicIPConnection {
 
     /**
      * Sets the secret auth token for this connection to be used for authenticated requests
+     * 
      * @param authToken secret auth token to use for this connection
      */
     public void setAuthToken(String authToken) {
@@ -115,6 +118,7 @@ public class HomematicIPConnection {
     /**
      * Initializes the connection by looking up the given Access Point ID using the cloud service
      * lookup URL.
+     * 
      * @param executor executor pool to use for this lookup request
      * @return future containing the lookup result
      */
@@ -131,6 +135,7 @@ public class HomematicIPConnection {
 
     /**
      * Performs current state lookup, which will in fact return most readable data from the cloud configuration.
+     * 
      * @param executor executor pool to use for this request
      * @return the connection
      */
@@ -154,6 +159,7 @@ public class HomematicIPConnection {
     /**
      * Performs lookup request using the API by integrating the configured access point id
      * with some internal JSON structure that identifies this client.
+     * 
      * @throws IOException in case any I/O error occurs
      */
     private void lookup() throws IOException {
@@ -177,6 +183,7 @@ public class HomematicIPConnection {
 
     /**
      * Create client characteristics used primarly in {@link #lookup() lookup()} process.
+     * 
      * @return object containing client characteristics
      */
     private ClientCharacteristics createClientCharacteristics() {
@@ -195,10 +202,12 @@ public class HomematicIPConnection {
     /**
      * Pairing step 1: request a new authenticated connection for the given uuid (client application id) and
      * access point id.
+     * 
      * @throws IOException in case of I/O error
      */
     public void authConnectionRequest() throws IOException {
-        final var request = new Request<AuthConnectionRequest, HomematicIPObject>(restUrl("/hmip/auth/connectionRequest"),
+        final var request = new Request<AuthConnectionRequest, HomematicIPObject>(
+                restUrl("/hmip/auth/connectionRequest"),
                 new AuthConnectionRequest(uuid, "OpenHAB Homematic IP", accessPointId), false);
         final var response = transport.post(request, HomematicIPObject.class);
         if (response.getStatusCode() != 200) {
@@ -210,6 +219,7 @@ public class HomematicIPConnection {
      * Pairing step 2: checks if given uuid is already authenticated after the link button has been pressed.
      * Will either return 200 OK (if pressed/authenticated) or 400 Bad Request (in case link button has not yet
      * been pressed).
+     * 
      * @throws IOException in case of I/O error
      */
     public boolean authIsRequestAcknowledgedRequest() throws IOException {
@@ -228,13 +238,15 @@ public class HomematicIPConnection {
 
     /**
      * Pairing step 3: request a new secret authenticated token from the server for given uuid
+     * 
      * @throws IOException in case of I/O error
      */
     public AuthRequestTokenResponse authRequestToken() throws IOException {
         final var request = new Request<AuthRequestTokenRequest, AuthRequestTokenResponse>(
                 restUrl("/hmip/auth/requestAuthToken"), new AuthRequestTokenRequest(uuid), false);
         final var response = transport.post(request, AuthRequestTokenResponse.class);
-        if (response.getStatusCode() != 200) {
+        if (response.getStatusCode() != 200 || response.getResponseBody() == null
+                || response.getResponseBody().getAuthToken() == null) {
             throw new IOException("Unexpected response for authRequestToken: " + response);
         }
         return response.getResponseBody();
@@ -242,6 +254,7 @@ public class HomematicIPConnection {
 
     /**
      * Pairing step 4: confirm the receipt of the authenticated token.
+     * 
      * @throws IOException in case of I/O error
      */
     public AuthConfirmTokenResponse authConfirmToken(String authToken) throws IOException {
@@ -257,6 +270,7 @@ public class HomematicIPConnection {
     /**
      * Builds a new rest url for the given path. It might be that this connection's base url changes due to
      * the lookup request, so we use an reentrant lock here.
+     * 
      * @param path path relative to base url
      * @return full url as string
      */
@@ -275,13 +289,9 @@ public class HomematicIPConnection {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", HomematicIPConnection.class.getSimpleName() + "[", "]")
-                .add("uuid='" + uuid + "'")
-                .add("accessPointId='" + accessPointId + "'")
-                .add("transport=" + transport)
-                .add("clientCharacteristics=" + clientCharacteristics)
-                .add("urlREST='" + urlREST + "'")
-                .add("urlWebSocket='" + urlWebSocket + "'")
-                .toString();
+        return new StringJoiner(", ", HomematicIPConnection.class.getSimpleName() + "[", "]").add("uuid='" + uuid + "'")
+                .add("accessPointId='" + accessPointId + "'").add("transport=" + transport)
+                .add("clientCharacteristics=" + clientCharacteristics).add("urlREST='" + urlREST + "'")
+                .add("urlWebSocket='" + urlWebSocket + "'").toString();
     }
 }

@@ -36,4 +36,7 @@ public class HomematicIPBindingConstants {
     public static final String CHANNEL_1 = "channel1";
 
     public static final String PROPERTY_VENDOR_NAME = "eQ-3 AG";
+
+    // Bridge configuration
+    public static final String AUTH_TOKEN = "authToken";
 }

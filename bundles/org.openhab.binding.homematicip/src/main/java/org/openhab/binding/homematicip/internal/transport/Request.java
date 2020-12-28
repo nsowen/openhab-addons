@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal.model.transport;
+package org.openhab.binding.homematicip.internal.transport;
 
 import java.util.HashMap;
 import java.util.Map;

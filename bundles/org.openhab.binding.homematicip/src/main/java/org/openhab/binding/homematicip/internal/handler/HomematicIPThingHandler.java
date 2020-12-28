@@ -10,15 +10,19 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  */
-package org.openhab.binding.homematicip.internal;
+package org.openhab.binding.homematicip.internal.handler;
 
 import static org.openhab.binding.homematicip.internal.HomematicIPBindingConstants.*;
 
+import java.util.Set;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.homematicip.internal.HomematicIPConfiguration;
 import org.openhab.core.thing.ChannelUID;
 import org.openhab.core.thing.Thing;
 import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.types.Command;
 import org.openhab.core.types.RefreshType;
@@ -33,6 +37,8 @@ import org.slf4j.LoggerFactory;
  */
 @NonNullByDefault
 public class HomematicIPThingHandler extends BaseThingHandler {
+
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_BRIDGE);
 
     private final Logger logger = LoggerFactory.getLogger(HomematicIPThingHandler.class);
 
