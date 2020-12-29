@@ -64,4 +64,80 @@ public abstract class Device extends HomematicIPObject {
                 .add("permanentlyReachable=" + permanentlyReachable).add("functionalChannels=" + functionalChannels)
                 .add("baseChannel=" + baseChannel).toString();
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getHomeId() {
+        return homeId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public Instant getLastStatusUpdate() {
+        return lastStatusUpdate;
+    }
+
+    public int getManufacturerCode() {
+        return manufacturerCode;
+    }
+
+    public String getOem() {
+        return oem;
+    }
+
+    public int getFirmwareVersionInteger() {
+        return firmwareVersionInteger;
+    }
+
+    public DeviceUpdateState getUpdateState() {
+        return updateState;
+    }
+
+    public String getFirmwareVersion() {
+        return firmwareVersion;
+    }
+
+    public ConnectionType getConnectionType() {
+        return connectionType;
+    }
+
+    public int getModelId() {
+        return modelId;
+    }
+
+    public String getModelType() {
+        return modelType;
+    }
+
+    public String getSerializedGlobalTradeItemNumber() {
+        return serializedGlobalTradeItemNumber;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public String getAvailableFirmwareVersion() {
+        return availableFirmwareVersion;
+    }
+
+    public boolean isPermanentlyReachable() {
+        return permanentlyReachable;
+    }
+
+    public Map<Integer, FunctionalChannel> getFunctionalChannels() {
+        return functionalChannels;
+    }
+
+    public FunctionalChannelType getBaseChannel() {
+        return baseChannel;
+    }
+
+    public void setDeviceType(String typeString) {
+        this.deviceType = typeString;
+    }
 }

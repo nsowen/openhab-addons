@@ -15,7 +15,7 @@
 		<properties>
 			<property name="vendor">eQ-3</property>
 		</properties>
-		<representation-property>serialNumber</representation-property>
+		<representation-property>uniqueId</representation-property>
 
 		<config-description>
 			<parameter name="accessPointId" type="text" required="true">

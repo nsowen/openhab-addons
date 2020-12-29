@@ -24,9 +24,10 @@ import org.openhab.core.thing.ThingTypeUID;
 @NonNullByDefault
 public class HomematicIPBindingConstants {
 
-    private static final String BINDING_ID = "homematicip";
+    public static final String BINDING_ID = "homematicip";
 
     public static final ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, "bridge");
+    public static final ThingTypeUID THING_TYPE_ACCESSPOINT = new ThingTypeUID(BINDING_ID, "accesspoint");
     public static final String CONFIG_DESCRIPTION_URI_CHANNEL = "channel-type:homematic:config";
 
     // List of all Thing Type UIDs
@@ -39,4 +40,9 @@ public class HomematicIPBindingConstants {
 
     // Bridge configuration
     public static final String AUTH_TOKEN = "authToken";
+
+    // Thing configuration properties
+    public static final String UNIQUE_ID = "uniqueId";
+    public static final String OEM = "oem";
+    public static final String FIRMWARE_VERSION = "firmwareVersion";
 }

@@ -1,7 +1,6 @@
 package org.openhab.binding.homematicip.internal.model.response;
 
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
 
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.client.Client;
@@ -30,8 +29,12 @@ public class GetCurrentStateResponse extends HomematicIPObject {
         this.home = home;
     }
 
-    public Map<String, Group> getGroups() {
-        return groups;
+    public List<Group> getGroups() {
+        return groups != null ? new ArrayList<>(groups.values()) : Collections.emptyList();
+    }
+
+    public List<Device> getDevices() {
+        return devices != null ? new ArrayList<>(devices.values()) : Collections.emptyList();
     }
 
     public void setGroups(Map<String, Group> groups) {

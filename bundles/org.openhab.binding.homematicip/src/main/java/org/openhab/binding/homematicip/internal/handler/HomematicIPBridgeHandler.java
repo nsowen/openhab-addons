@@ -6,12 +6,20 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.homematicip.internal.HomematicIPBindingConstants;
+import org.openhab.binding.homematicip.internal.HomematicIPClient;
 import org.openhab.binding.homematicip.internal.HomematicIPConfiguration;
 import org.openhab.binding.homematicip.internal.HomematicIPConnection;
+import org.openhab.binding.homematicip.internal.discovery.HomematicIPDiscoveryService;
+import org.openhab.binding.homematicip.internal.model.device.Device;
+import org.openhab.binding.homematicip.internal.model.group.Group;
+import org.openhab.binding.homematicip.internal.model.home.Home;
+import org.openhab.binding.homematicip.internal.model.response.GetCurrentStateResponse;
 import org.openhab.binding.homematicip.internal.transport.HttpTransport;
 import org.openhab.core.config.core.Configuration;
 import org.openhab.core.config.core.status.ConfigStatusMessage;
@@ -29,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-26
  */
-public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
+public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implements HomematicIPClient {
 
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_BRIDGE);
     private final static int PAIRING_ATTEMPT_MAX = 10;
@@ -39,6 +47,9 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
     private final WebSocketFactory webSocketFactory;
     private HomematicIPConnection connection;
     private HomematicIPConfiguration bridgeConfig;
+    private @Nullable volatile GetCurrentStateResponse state;
+
+    private @Nullable HomematicIPDiscoveryService discoveryService;
 
     public HomematicIPBridgeHandler(Bridge bridge, HttpClientFactory httpClientFactory,
             WebSocketFactory webSocketFactory) {
@@ -54,19 +65,8 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
         updateStatus(ThingStatus.UNKNOWN);
         if (StringUtils.isNotEmpty(bridgeConfig.getAccessPointId())) {
             try {
-                this.connection = createConnection();
-                this.connection.initAsync(scheduler).thenAccept((c) -> {
-                    if (connection.isReadyForPairing()) {
-                        executePairing();
-                    } else if (connection.isReadyForUse()) {
-                        logger.debug("Got valid connection: " + connection);
-                        updateStatus(ThingStatus.ONLINE);
-                    } else {
-                        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                                "@text/offline.communication-error");
-                    }
-                    // TODO: start discovery if we are online
-                });
+                connection = createConnection();
+                connection.initializeAsync(scheduler).thenAcceptAsync((c) -> checkPairingStatus(), scheduler);
             } catch (IOException | NoSuchAlgorithmException e) {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                         "@text/offline.communication-error");
@@ -79,10 +79,79 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
     }
 
     /**
+     * Checks the connection's pairing status
+     */
+    private void checkPairingStatus() {
+        if (connection.isReadyForPairing()) {
+            if (executePairing()) {
+                logger.debug("Pairing successful: " + connection);
+                onUpdate();
+            } else {
+                logger.warn("Pairing failed for connection: " + connection);
+            }
+        } else if (connection.isReadyForUse()) {
+            logger.debug("Got valid connection: " + connection);
+            updateStatus(ThingStatus.ONLINE);
+            onUpdate();
+        } else {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                    "@text/offline.communication-error");
+        }
+        // TODO: start discovery if we are online
+    }
+
+    /**
+     * Called whenever where are online a need to fetch new data
+     */
+    private void onUpdate() {
+        if (!connection.isReadyForUse()) {
+            logger.warn("onUpdate() called without valid connection");
+            return;
+        }
+        connection.getCurrentState(scheduler).thenAcceptAsync((response) -> {
+            synchronized (this) {
+                logger.debug("Got response body - scan starting: {}", discoveryService);
+                state = response.getResponseBody();
+                // TODO relate objects
+            }
+            discoveryService.startScan();
+        }, scheduler);
+    }
+
+    /**
+     * Get current groups
+     *
+     * @return
+     */
+    public List<Group> getGroups() {
+        return state != null ? state.getGroups() : Collections.emptyList();
+    }
+
+    /**
+     * Get current groups
+     *
+     * @return
+     */
+    public List<Device> getDevices() {
+        return state != null ? state.getDevices() : Collections.emptyList();
+    }
+
+    /**
+     * Get current groups
+     *
+     * @return
+     */
+    public Home getHome() {
+        return state != null ? state.getHome() : null;
+    }
+
+    /**
      * Trigger pairing of new access point by working the Homematic IP APIs and wait
      * for haptic feedback by pressing the link button.
+     *
+     * @return true if pairing was successful
      */
-    private void executePairing() {
+    private boolean executePairing() {
         try {
             connection.authConnectionRequest();
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
@@ -94,7 +163,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                             "@text/offline.communication-error");
                     logger.warn("Cannot initialize Homematic IP: {}", "link button was not pressed in time");
-                    return;
+                    return false;
                 }
             }
             final var tokenResponse = connection.authRequestToken();
@@ -102,8 +171,8 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
             try {
                 connection.authConfirmToken(tokenResponse.getAuthToken());
                 connection.setAuthToken(tokenResponse.getAuthToken());
-                logger.debug("Pairing successful: " + connection);
                 updateStatus(ThingStatus.ONLINE);
+                return true;
             } catch (Exception e) {
                 logger.warn("Cannot initialize Homematic IP: {}", e.getMessage(), e);
                 updateBridgeThingConfigurationAuthToken(null); // reset auth token in case of confirm error
@@ -113,6 +182,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
                     "@text/offline.communication-error");
             logger.warn("Cannot initialize Homematic IP: {}", e.getMessage(), e);
         }
+        return false;
     }
 
     private void updateBridgeThingConfigurationAuthToken(String authToken) {
@@ -127,6 +197,27 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler {
             logger.warn("Unable to update configuration of Hue bridge.");
             logger.warn("Please configure the user name manually.");
         }
+    }
+
+    @Override
+    public boolean registerDiscoveryListener(HomematicIPDiscoveryService listener) {
+        if (discoveryService == null) {
+            discoveryService = listener;
+            getDevices().forEach(listener::addDeviceDiscovery);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean unregisterDiscoveryListener() {
+        if (discoveryService != null) {
+            discoveryService = null;
+            return true;
+        }
+
+        return false;
     }
 
     @Override

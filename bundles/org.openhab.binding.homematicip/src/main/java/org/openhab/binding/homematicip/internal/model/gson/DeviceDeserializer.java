@@ -16,7 +16,7 @@ import java.lang.reflect.Type;
 
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.device.DeviceType;
-import org.openhab.binding.homematicip.internal.model.group.GenericGroup;
+import org.openhab.binding.homematicip.internal.model.device.GenericDevice;
 
 import com.google.gson.*;
 
@@ -33,10 +33,10 @@ public class DeviceDeserializer implements JsonDeserializer<Device> {
             throws JsonParseException {
         JsonObject obj = jsonElement.getAsJsonObject();
         String typeString = obj.get("type").getAsString();
-        var deviceType = DeviceType.valueOf(typeString);
-        if (deviceType != null) {
-            return context.deserialize(jsonElement, deviceType.getClazz());
-        }
-        return context.deserialize(jsonElement, GenericGroup.class);
+        final var deviceType = DeviceType.valueOf(typeString);
+        final var device = (Device) (deviceType != null ? context.deserialize(jsonElement, deviceType.getClazz())
+                : context.deserialize(jsonElement, GenericDevice.class));
+        device.setDeviceType(typeString);
+        return device;
     }
 }

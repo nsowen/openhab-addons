@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
 @NonNullByDefault
 public class HomematicIPThingHandler extends BaseThingHandler {
 
-    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_BRIDGE);
+    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_ACCESSPOINT);
 
     private final Logger logger = LoggerFactory.getLogger(HomematicIPThingHandler.class);
 

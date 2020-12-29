@@ -41,7 +41,7 @@ class HomematicIPConnectionTest {
         this.transport = new HttpTransport(factory, null);
         this.connection = new HomematicIPConnection(uuid, accessPointId, transport);
         this.connection.setAuthToken("C72117F990F2C5B1F6715286F071BE9AA2F70C7644BB480DD7323B3AA72996B4");
-        this.connection.initAsync(scheduler).get();
+        this.connection.initializeAsync(scheduler).get();
     }
 
     @Test
