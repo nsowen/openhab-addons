@@ -152,6 +152,7 @@ public class HomematicIPConnection {
                 if (response.getStatusCode() != 200) {
                     throw new IllegalStateException("Expected 200 ok");
                 }
+                response.getResponseBody().resolveMappings();
             } catch (Exception e) {
                 throw new CompletionException(e);
             }

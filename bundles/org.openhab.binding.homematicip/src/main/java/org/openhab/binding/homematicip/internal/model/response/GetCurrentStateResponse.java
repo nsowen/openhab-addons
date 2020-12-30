@@ -46,4 +46,13 @@ public class GetCurrentStateResponse extends HomematicIPObject {
         return new StringJoiner(", ", GetCurrentStateResponse.class.getSimpleName() + "[", "]").add("home=" + home)
                 .add("devices=" + devices).add("groups=" + groups).add("clients=" + clients).toString();
     }
+
+    /**
+     * After being parsed, resolve mappings
+     */
+    @Override
+    public void resolveMappings() {
+        groups.forEach((key, group) -> group.resolveMappings(devices, groups));
+        devices.forEach((key, device) -> device.resolveMappings(devices, groups));
+    }
 }

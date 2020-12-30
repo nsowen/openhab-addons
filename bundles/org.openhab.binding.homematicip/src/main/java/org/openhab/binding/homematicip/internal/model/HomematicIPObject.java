@@ -45,7 +45,9 @@ public class HomematicIPObject {
     }
 
     public static HomematicIPObject fromJson(String json, Class<? extends HomematicIPObject> clazz) {
-        return gson.fromJson(json, clazz);
+        var object = gson.fromJson(json, clazz);
+        object.resolveMappings();
+        return object;
     }
 
     public static HomematicIPObject fromJson(Reader json, Class<? extends HomematicIPObject> clazz) {
@@ -55,4 +57,9 @@ public class HomematicIPObject {
     public static String toJson(Object object) {
         return gson.toJson(object);
     }
+
+    public void resolveMappings() {
+        // no-op
+    }
+
 }

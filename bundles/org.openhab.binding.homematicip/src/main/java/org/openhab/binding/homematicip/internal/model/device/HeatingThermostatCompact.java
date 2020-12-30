@@ -12,11 +12,60 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
+import org.openhab.binding.homematicip.internal.model.channel.HeatingThermostatChannel;
+import org.openhab.binding.homematicip.internal.model.common.ValveState;
+
+import java.util.Optional;
+import java.util.StringJoiner;
+
 /**
- * Device-specific implementation
+ * HMIP-eTRV-C (Heating-thermostat compact without display)
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class HeatingThermostatCompact extends Device {
+public class HeatingThermostatCompact extends AbstractSabotageDevice {
+
+    public float getTemperatureOffset() {
+        return getChannel().map(HeatingThermostatChannel::getTemperatureOffset).orElse(0.0f);
+    }
+
+    public float getValvePosition() {
+        return getChannel().map(HeatingThermostatChannel::getValvePosition).orElse(0.0f);
+    }
+
+    public ValveState getValveState() {
+        return getChannel().map(HeatingThermostatChannel::getValveState).orElse(ValveState.ERROR_POSITION);
+    }
+
+    public float getSetPointTemperature() {
+        return getChannel().map(HeatingThermostatChannel::getSetPointTemperature).orElse(0.0f);
+    }
+
+    public float getValveActualTemperature() {
+        return getChannel().map(HeatingThermostatChannel::getValveActualTemperature).orElse(0.0f);
+    }
+
+    public boolean isAutomaticValveAdaptionNeeded() {
+        return getChannel().map(HeatingThermostatChannel::isAutomaticValveAdaptionNeeded).orElse(false);
+    }
+
+    private Optional<HeatingThermostatChannel> getChannel() {
+        return (Optional<HeatingThermostatChannel>) getFunctionalChannel(FunctionalChannelType.HEATING_THERMOSTAT_CHANNEL);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", HeatingThermostat.class.getSimpleName() + "[", "]")
+                .add("sabotage=" + isSabotage())
+                .add("temperatureOffset=" + getTemperatureOffset())
+                .add("valvePosition=" + getValvePosition())
+                .add("valveState=" + getValveState())
+                .add("setPointTemperature=" + getSetPointTemperature())
+                .add("valveActualTemperature=" + getValveActualTemperature())
+                .add("automaticValveAdaptionNeeded=" + isAutomaticValveAdaptionNeeded())
+                .toString();
+    }
+
 }

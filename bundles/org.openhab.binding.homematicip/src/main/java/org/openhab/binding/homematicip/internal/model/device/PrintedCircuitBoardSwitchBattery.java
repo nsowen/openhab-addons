@@ -13,10 +13,10 @@
 package org.openhab.binding.homematicip.internal.model.device;
 
 /**
- * Device-specific implementation
+ * HMIP-PCBS-BAT (Printed Circuit Board Switch Battery)
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class PrintedCircuitBoardSwitchBattery extends Device {
+public class PrintedCircuitBoardSwitchBattery extends AbstractSwitchDevice {
 }

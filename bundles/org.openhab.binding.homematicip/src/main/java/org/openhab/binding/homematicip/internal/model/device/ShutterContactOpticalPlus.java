@@ -13,10 +13,10 @@
 package org.openhab.binding.homematicip.internal.model.device;
 
 /**
- * Device-specific implementation
+ * HmIP-SWDO-PL (Window / Door Contact – optical - Plus)
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class ShutterContactOpticalPlus extends Device {
+public class ShutterContactOpticalPlus extends ShutterContact {
 }

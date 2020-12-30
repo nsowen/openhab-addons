@@ -13,6 +13,7 @@
 package org.openhab.binding.homematicip.internal.model.channel;
 
 import java.util.List;
+import java.util.StringJoiner;
 
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 
@@ -23,9 +24,41 @@ import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
  * @since 2020-12-27
  */
 public abstract class FunctionalChannel extends HomematicIPObject {
+
     protected int index;
     protected int groupIndex;
     protected String label;
     protected FunctionalChannelType functionalChannelType;
     protected List<String> groups;
+
+    public int getIndex() {
+        return index;
+    }
+
+    public int getGroupIndex() {
+        return groupIndex;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public FunctionalChannelType getFunctionalChannelType() {
+        return functionalChannelType;
+    }
+
+    public List<String> getGroups() {
+        return groups;
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", FunctionalChannel.class.getSimpleName() + "[", "]")
+                .add("index=" + index)
+                .add("groupIndex=" + groupIndex)
+                .add("label='" + label + "'")
+                .add("functionalChannelType=" + functionalChannelType)
+                .add("groups=" + groups)
+                .toString();
+    }
 }

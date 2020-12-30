@@ -12,11 +12,40 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import org.openhab.binding.homematicip.internal.model.channel.ContactInterfaceChannel;
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
+import org.openhab.binding.homematicip.internal.model.channel.ShutterContactChannel;
+import org.openhab.binding.homematicip.internal.model.common.WindowState;
+
+import java.util.Optional;
+import java.util.StringJoiner;
+
 /**
  * Device-specific implementation
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class ContactInterface extends Device {
+public class ContactInterface extends Device<ContactInterfaceChannel> {
+
+    public WindowState getWindowState() {
+        return getChannel().map(ContactInterfaceChannel::getWindowState).orElse(WindowState.CLOSED);
+    }
+
+    public long getEventDelay() {
+        return getChannel().map(ContactInterfaceChannel::getEventDelay).orElse(0L);
+    }
+
+    private Optional<ContactInterfaceChannel> getChannel() {
+        return (Optional<ContactInterfaceChannel>) getFunctionalChannel(FunctionalChannelType.CONTACT_INTERFACE_CHANNEL);
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", ContactInterface.class.getSimpleName() + "[", "]")
+                .add("windowState=" + getWindowState())
+                .add("eventDelay=" + getEventDelay())
+                .toString();
+    }
+
 }

@@ -18,5 +18,5 @@ package org.openhab.binding.homematicip.internal.model.device;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class RoomControlDevice extends Device {
+public class RoomControlDevice extends WallMountedThermostatPro {
 }

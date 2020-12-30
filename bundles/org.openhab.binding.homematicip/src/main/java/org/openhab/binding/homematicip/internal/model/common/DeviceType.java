@@ -1,5 +1,6 @@
-package org.openhab.binding.homematicip.internal.model.device;
+package org.openhab.binding.homematicip.internal.model.common;
 
+import org.openhab.binding.homematicip.internal.model.device.*;
 import org.openhab.binding.homematicip.internal.model.group.*;
 
 /**

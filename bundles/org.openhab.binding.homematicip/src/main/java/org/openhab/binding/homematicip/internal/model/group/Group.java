@@ -13,10 +13,15 @@
 package org.openhab.binding.homematicip.internal.model.group;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import org.openhab.binding.homematicip.internal.model.channel.Channel;
+import org.openhab.binding.homematicip.internal.model.device.Device;
+import org.openhab.binding.homematicip.internal.model.response.GetCurrentStateResponse;
 
 /**
  * New class.
@@ -33,7 +38,48 @@ public abstract class Group {
     protected Instant lastStatusUpdate;
     protected String unreach;
     protected String type;
-    protected List<Channel> channels;
+    protected List<Channel> channels = Collections.emptyList();
+    protected List<Device> devices = Collections.emptyList();
+
+    public String getId() {
+        return id;
+    }
+
+    public String getHomeId() {
+        return homeId;
+    }
+
+    public String getMetaGroupId() {
+        return metaGroupId;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public Instant getLastStatusUpdate() {
+        return lastStatusUpdate;
+    }
+
+    public String getUnreach() {
+        return unreach;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public List<Channel> getChannels() {
+        return channels;
+    }
+
+    public List<Device> getResolvedDevices() {
+        return devices;
+    }
+
+    public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
+        this.devices = getChannels().stream().map(channel -> devices.get(channel.getDeviceId())).collect(Collectors.toList());
+    }
 
     @Override
     public String toString() {
@@ -42,4 +88,6 @@ public abstract class Group {
                 .add("lastStatusUpdate=" + lastStatusUpdate).add("unreach='" + unreach + "'").add("type='" + type + "'")
                 .add("channels=" + channels).toString();
     }
+
+
 }

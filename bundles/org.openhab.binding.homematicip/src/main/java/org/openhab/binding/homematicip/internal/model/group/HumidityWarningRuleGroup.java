@@ -13,8 +13,11 @@
 package org.openhab.binding.homematicip.internal.model.group;
 
 import java.time.Instant;
+import java.util.Map;
 
+import org.openhab.binding.homematicip.internal.model.channel.Channel;
 import org.openhab.binding.homematicip.internal.model.common.HumidityValidationType;
+import org.openhab.binding.homematicip.internal.model.device.Device;
 
 /**
  * Group-specific implementation
@@ -32,5 +35,20 @@ public class HumidityWarningRuleGroup extends Group {
     protected boolean ventilationRecommended;
     protected Instant lastExecutionTimestamp;
     protected Instant lastStatusUpdate;
-    // protected Object outdoorClimateSensor; // device
+    protected Channel outdoorClimateSensor;
+    protected Device outdoorClimateSensorDevice;
+
+    public Device getOutdoorClimateSensorDevice() {
+        return outdoorClimateSensorDevice;
+    }
+
+    public void setOutdoorClimateSensorDevice(Device outdoorClimateSensorDevice) {
+        this.outdoorClimateSensorDevice = outdoorClimateSensorDevice;
+    }
+
+    @Override
+    public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
+        this.outdoorClimateSensorDevice = devices.get(outdoorClimateSensor);
+    }
+
 }

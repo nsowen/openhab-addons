@@ -15,7 +15,7 @@ package org.openhab.binding.homematicip.internal.model.gson;
 import java.lang.reflect.Type;
 
 import org.openhab.binding.homematicip.internal.model.device.Device;
-import org.openhab.binding.homematicip.internal.model.device.DeviceType;
+import org.openhab.binding.homematicip.internal.model.common.DeviceType;
 import org.openhab.binding.homematicip.internal.model.device.GenericDevice;
 
 import com.google.gson.*;

@@ -29,4 +29,7 @@ public class SecurityZoneGroup extends Group {
     // todo private Object motionDetected;
     // todo private Object sabotage;
     // todo private Object presenceDetected;
+
+
+
 }

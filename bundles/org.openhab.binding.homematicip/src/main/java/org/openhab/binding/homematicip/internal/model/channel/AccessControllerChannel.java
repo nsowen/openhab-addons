@@ -3,7 +3,7 @@ package org.openhab.binding.homematicip.internal.model.channel;
 import java.util.StringJoiner;
 
 /**
- * New class.
+ * Access controller channel
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
@@ -13,6 +13,18 @@ public class AccessControllerChannel extends DeviceBaseChannel {
     private float dutyCycleLevel;
     private int accessPointPriority;
     private float signalBrightness;
+
+    public float getDutyCycleLevel() {
+        return dutyCycleLevel;
+    }
+
+    public int getAccessPointPriority() {
+        return accessPointPriority;
+    }
+
+    public float getSignalBrightness() {
+        return signalBrightness;
+    }
 
     @Override
     public String toString() {

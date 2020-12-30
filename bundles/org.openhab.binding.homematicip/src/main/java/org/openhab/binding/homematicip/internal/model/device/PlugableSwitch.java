@@ -13,10 +13,10 @@
 package org.openhab.binding.homematicip.internal.model.device;
 
 /**
- * Device-specific implementation
+ *  HMIP-PS (Pluggable Switch), HMIP-PCBS (Switch Circuit Board - 1 channel)
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class PlugableSwitch extends Device {
+public class PlugableSwitch extends AbstractSwitchDevice {
 }

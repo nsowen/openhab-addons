@@ -12,6 +12,8 @@
  */
 package org.openhab.binding.homematicip.internal.transport;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -21,7 +23,7 @@ import java.util.StringJoiner;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class Response<T, V> {
+public class Response<T extends HomematicIPObject, V extends HomematicIPObject> {
 
     private V responseBody;
     private int statusCode;

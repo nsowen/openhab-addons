@@ -12,23 +12,30 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import java.lang.reflect.ParameterizedType;
 import java.time.Instant;
-import java.util.Map;
-import java.util.StringJoiner;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
+import org.openhab.binding.homematicip.internal.HomematicIPConnection;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
 import org.openhab.binding.homematicip.internal.model.common.ConnectionType;
 import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateState;
+import org.openhab.binding.homematicip.internal.model.group.Group;
 
 /**
  * Abstract Homematic IP device
  *
+ * @param <T> FunctionalChannel implementation that defines the base channel
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public abstract class Device extends HomematicIPObject {
+public abstract class Device<T extends FunctionalChannel> extends HomematicIPObject {
+
+    private HomematicIPConnection connection;
 
     protected String id;
     protected String homeId;
@@ -46,23 +53,21 @@ public abstract class Device extends HomematicIPObject {
     protected String deviceType;
     protected String availableFirmwareVersion;
     protected boolean permanentlyReachable;
-    protected Map<Integer, FunctionalChannel> functionalChannels;
 
-    protected FunctionalChannelType baseChannel = FunctionalChannelType.DEVICE_BASE;
+    protected Map<Integer, FunctionalChannel> functionalChannels = new HashMap<>();
+    protected Map<FunctionalChannelType, FunctionalChannel> functionalChannelMap = new ConcurrentHashMap<>();
 
-    @Override
-    public String toString() {
-        return new StringJoiner(", ", Device.class.getSimpleName() + "[", "]").add("id='" + id + "'")
-                .add("homeId='" + homeId + "'").add("label='" + label + "'").add("lastStatusUpdate=" + lastStatusUpdate)
-                .add("manufacturerCode=" + manufacturerCode).add("oem='" + oem + "'")
-                .add("firmwareVersionInteger=" + firmwareVersionInteger).add("updateState=" + updateState)
-                .add("firmwareVersion='" + firmwareVersion + "'").add("connectionType=" + connectionType)
-                .add("modelId=" + modelId).add("modelType='" + modelType + "'")
-                .add("serializedGlobalTradeItemNumber='" + serializedGlobalTradeItemNumber + "'")
-                .add("deviceType='" + deviceType + "'")
-                .add("availableFirmwareVersion='" + availableFirmwareVersion + "'")
-                .add("permanentlyReachable=" + permanentlyReachable).add("functionalChannels=" + functionalChannels)
-                .add("baseChannel=" + baseChannel).toString();
+    protected FunctionalChannelType baseFunctionalChannelType = FunctionalChannelType.DEVICE_BASE;
+
+    public void initialize(HomematicIPConnection connection) {
+        this.connection = connection;
+    }
+
+    protected HomematicIPConnection getConnection() {
+        if (connection == null) {
+            throw new IllegalStateException("Not initialized");
+        }
+        return connection;
     }
 
     public String getId() {
@@ -133,11 +138,43 @@ public abstract class Device extends HomematicIPObject {
         return functionalChannels;
     }
 
-    public FunctionalChannelType getBaseChannel() {
-        return baseChannel;
+    public Optional<T> getBaseFunctionalChannel() {
+        return (Optional<T>) getFunctionalChannel(baseFunctionalChannelType);
+    }
+
+    public Optional<? extends FunctionalChannel> getFunctionalChannel(FunctionalChannelType type) {
+        var channel = functionalChannelMap.get(type);
+        if (channel != null) {
+            return Optional.of(channel);
+        }
+        var _channel = functionalChannels
+                .values()
+                .stream()
+                .filter(fc -> fc.getFunctionalChannelType() == type)
+                .findFirst();
+        _channel.ifPresent(c -> functionalChannelMap.put(type, c));
+        return _channel;
     }
 
     public void setDeviceType(String typeString) {
         this.deviceType = typeString;
+    }
+
+    public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", Device.class.getSimpleName() + "[", "]").add("id='" + id + "'")
+                .add("homeId='" + homeId + "'").add("label='" + label + "'").add("lastStatusUpdate=" + lastStatusUpdate)
+                .add("manufacturerCode=" + manufacturerCode).add("oem='" + oem + "'")
+                .add("firmwareVersionInteger=" + firmwareVersionInteger).add("updateState=" + updateState)
+                .add("firmwareVersion='" + firmwareVersion + "'").add("connectionType=" + connectionType)
+                .add("modelId=" + modelId).add("modelType='" + modelType + "'")
+                .add("serializedGlobalTradeItemNumber='" + serializedGlobalTradeItemNumber + "'")
+                .add("deviceType='" + deviceType + "'")
+                .add("availableFirmwareVersion='" + availableFirmwareVersion + "'")
+                .add("permanentlyReachable=" + permanentlyReachable).add("functionalChannels=" + functionalChannels)
+                .add("baseChannel=" + baseFunctionalChannelType).toString();
     }
 }
