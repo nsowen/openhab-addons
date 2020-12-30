@@ -12,11 +12,11 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import java.util.StringJoiner;
+
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
 import org.openhab.binding.homematicip.internal.model.channel.WallMountedThermostatProChannel;
 import org.openhab.binding.homematicip.internal.model.common.ClimateControlDisplay;
-
-import java.util.StringJoiner;
 
 /**
  * HMIP-STHD (Temperature and Humidity Sensor with display - indoor)
@@ -47,7 +47,8 @@ public class TemperatureHumiditySensorDisplay extends Device<WallMountedThermost
     }
 
     public ClimateControlDisplay getDisplay() {
-        return getBaseFunctionalChannel().map(WallMountedThermostatProChannel::getDisplay).orElse(ClimateControlDisplay.ACTUAL);
+        return getBaseFunctionalChannel().map(WallMountedThermostatProChannel::getDisplay)
+                .orElse(ClimateControlDisplay.ACTUAL);
     }
 
     public float getSetPointTemperature() {
@@ -56,18 +57,11 @@ public class TemperatureHumiditySensorDisplay extends Device<WallMountedThermost
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-                .add("id='" + getId() + "'")
-                .add("homeId='" + getHomeId() + "'")
-                .add("label='" + getLabel() + "'")
+        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]").add("id='" + getId() + "'")
+                .add("homeId='" + getHomeId() + "'").add("label='" + getLabel() + "'")
                 .add("firmwareVersion='" + getFirmwareVersion() + "'")
-                .add("temperatureOffset=" + getTemperatureOffset())
-                .add("actualTemperature=" + getActualTemperature())
-                .add("humidity=" + getHumidity())
-                .add("vaporAmount=" + getVaporAmount())
-                .add("setPointTemperature=" + getSetPointTemperature())
-                .add("display=" + getDisplay())
-                .toString();
+                .add("temperatureOffset=" + getTemperatureOffset()).add("actualTemperature=" + getActualTemperature())
+                .add("humidity=" + getHumidity()).add("vaporAmount=" + getVaporAmount())
+                .add("setPointTemperature=" + getSetPointTemperature()).add("display=" + getDisplay()).toString();
     }
-
 }

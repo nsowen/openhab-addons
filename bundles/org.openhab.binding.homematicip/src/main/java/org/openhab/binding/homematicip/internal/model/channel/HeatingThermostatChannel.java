@@ -40,5 +40,4 @@ public class HeatingThermostatChannel extends FunctionalChannel {
     public boolean isAutomaticValveAdaptionNeeded() {
         return automaticValveAdaptionNeeded;
     }
-
 }

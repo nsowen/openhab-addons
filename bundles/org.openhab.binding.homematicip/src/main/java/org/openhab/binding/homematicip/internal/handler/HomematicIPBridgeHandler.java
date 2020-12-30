@@ -3,7 +3,6 @@ package org.openhab.binding.homematicip.internal.handler;
 import static org.openhab.binding.homematicip.internal.HomematicIPBindingConstants.THING_TYPE_BRIDGE;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -64,14 +63,8 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
         bridgeConfig = getConfigAs(HomematicIPConfiguration.class);
         updateStatus(ThingStatus.UNKNOWN);
         if (StringUtils.isNotEmpty(bridgeConfig.getAccessPointId())) {
-            try {
-                connection = createConnection();
-                connection.initializeAsync(scheduler).thenAcceptAsync((c) -> checkPairingStatus(), scheduler);
-            } catch (IOException | NoSuchAlgorithmException e) {
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-                        "@text/offline.communication-error");
-                logger.warn("Cannot initialize Homematic IP: {}", e.getMessage(), e);
-            }
+            connection = createConnection();
+            connection.initializeAsync(scheduler).thenAcceptAsync((c) -> checkPairingStatus(), scheduler);
         } else {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "@text/offline.conf-error-no-accesspoint-id");
@@ -97,7 +90,6 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "@text/offline.communication-error");
         }
-        // TODO: start discovery if we are online
     }
 
     /**
@@ -108,14 +100,15 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
             logger.warn("onUpdate() called without valid connection");
             return;
         }
-        connection.getCurrentState(scheduler).thenAcceptAsync((response) -> {
+        connection.loadCurrentState(scheduler).thenAcceptAsync((response) -> {
+            logger.debug("State done");
             synchronized (this) {
-                logger.debug("Got response body - scan starting: {}", discoveryService);
-                state = response.getResponseBody();
-                // TODO relate objects
+                state = response;
             }
+            logger.debug("Starting scan");
             discoveryService.startScan();
         }, scheduler);
+        logger.debug("Update call done");
     }
 
     /**
@@ -124,7 +117,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
      * @return
      */
     public List<Group> getGroups() {
-        return state != null ? state.getGroups() : Collections.emptyList();
+        return state != null ? state.getGroupList() : Collections.emptyList();
     }
 
     /**
@@ -133,7 +126,20 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
      * @return
      */
     public List<Device> getDevices() {
-        return state != null ? state.getDevices() : Collections.emptyList();
+        return state != null ? state.getDeviceList() : Collections.emptyList();
+    }
+
+    public GetCurrentStateResponse getCurrentStateResponse() {
+        return state;
+    }
+
+    /**
+     * Test if the bridge is ready for use (state received, connection is up)
+     *
+     * @return
+     */
+    public boolean isReadyForUse() {
+        return connection != null && connection.isReadyForUse() && state != null;
     }
 
     /**
@@ -224,7 +230,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     public void handleCommand(ChannelUID channelUID, Command command) {
     }
 
-    private HomematicIPConnection createConnection() throws IOException, NoSuchAlgorithmException {
+    private HomematicIPConnection createConnection() {
         var transport = new HttpTransport(httpClientFactory, webSocketFactory);
         var connection = new HomematicIPConnection(getThing().getUID().getAsString(), bridgeConfig.getAccessPointId(),
                 bridgeConfig.getAuthToken(), transport);

@@ -12,12 +12,12 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import java.util.Optional;
+import java.util.StringJoiner;
+
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
 import org.openhab.binding.homematicip.internal.model.channel.HeatingThermostatChannel;
 import org.openhab.binding.homematicip.internal.model.common.ValveState;
-
-import java.util.Optional;
-import java.util.StringJoiner;
 
 /**
  * HMIP-eTRV-C (Heating-thermostat compact without display)
@@ -52,20 +52,17 @@ public class HeatingThermostatCompact extends AbstractSabotageDevice {
     }
 
     private Optional<HeatingThermostatChannel> getChannel() {
-        return (Optional<HeatingThermostatChannel>) getFunctionalChannel(FunctionalChannelType.HEATING_THERMOSTAT_CHANNEL);
+        return (Optional<HeatingThermostatChannel>) getFunctionalChannel(
+                FunctionalChannelType.HEATING_THERMOSTAT_CHANNEL);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", HeatingThermostat.class.getSimpleName() + "[", "]")
-                .add("sabotage=" + isSabotage())
-                .add("temperatureOffset=" + getTemperatureOffset())
-                .add("valvePosition=" + getValvePosition())
-                .add("valveState=" + getValveState())
+                .add("sabotage=" + isSabotage()).add("temperatureOffset=" + getTemperatureOffset())
+                .add("valvePosition=" + getValvePosition()).add("valveState=" + getValveState())
                 .add("setPointTemperature=" + getSetPointTemperature())
                 .add("valveActualTemperature=" + getValveActualTemperature())
-                .add("automaticValveAdaptionNeeded=" + isAutomaticValveAdaptionNeeded())
-                .toString();
+                .add("automaticValveAdaptionNeeded=" + isAutomaticValveAdaptionNeeded()).toString();
     }
-
 }

@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.request.*;
 import org.openhab.binding.homematicip.internal.model.response.AuthConfirmTokenResponse;
 import org.openhab.binding.homematicip.internal.model.response.AuthRequestTokenResponse;
@@ -33,6 +34,8 @@ import org.openhab.binding.homematicip.internal.model.response.LookupResponse;
 import org.openhab.binding.homematicip.internal.transport.Request;
 import org.openhab.binding.homematicip.internal.transport.Response;
 import org.openhab.binding.homematicip.internal.transport.Transport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Class representing an online connection to the Homematic IP Service
@@ -43,6 +46,7 @@ import org.openhab.binding.homematicip.internal.transport.Transport;
 @NonNullByDefault
 public class HomematicIPConnection {
 
+    private final Logger logger = LoggerFactory.getLogger(HomematicIPConnection.class);
     private final String uuid;
     private final String accessPointId;
     private final Transport transport;
@@ -74,11 +78,10 @@ public class HomematicIPConnection {
      * @param accessPointId SGTIN / unique id of access point we are addressing over cloud
      * @param authToken Secret auth token to be used for authenticated requests
      * @param transport transport implementation to use
-     * @throws NoSuchAlgorithmException in case SHA512 is not supported
      * @throws IOException in case of any I/O issue
      */
     public HomematicIPConnection(String uuid, @Nullable String accessPointId, @Nullable String authToken,
-            Transport transport) throws NoSuchAlgorithmException {
+            Transport transport) {
         this.uuid = uuid;
         this.accessPointId = accessPointId.replaceAll("[^A-Za-z0-9 ]", "").toUpperCase();
         this.transport = transport;
@@ -140,23 +143,37 @@ public class HomematicIPConnection {
      * @param executor executor pool to use for this request
      * @return the connection
      */
-    public CompletableFuture<Response<GetCurrentStateRequest, GetCurrentStateResponse>> getCurrentState(
-            Executor executor) {
+    public CompletableFuture<GetCurrentStateResponse> loadCurrentState(Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
             Response<GetCurrentStateRequest, GetCurrentStateResponse> response;
             try {
+                logger.debug("Building request");
                 var request = new Request<GetCurrentStateRequest, GetCurrentStateResponse>(
                         restUrl("/hmip/home/getCurrentState"),
                         new GetCurrentStateRequest(accessPointId, clientCharacteristics));
                 response = transport.post(request, GetCurrentStateResponse.class);
+                logger.debug("Got response");
                 if (response.getStatusCode() != 200) {
                     throw new IllegalStateException("Expected 200 ok");
                 }
-                response.getResponseBody().resolveMappings();
+                if (response.getResponseBody() != null) {
+                    var state = response.getResponseBody();
+                    state.initialize(this);
+                    state.getGroupList().forEach((group) -> {
+                        group.initialize(this);
+                        group.resolveMappings(state.getDevices(), state.getGroups());
+                    });
+                    state.getDeviceList().forEach((device) -> {
+                        device.initialize(this);
+                        device.resolveMappings(state.getDevices(), state.getGroups());
+                    });
+                    logger.debug("Initialized");
+                    return state;
+                }
+                throw new IllegalStateException("Response body was null");
             } catch (Exception e) {
                 throw new CompletionException(e);
             }
-            return response;
         }, executor);
     }
 
@@ -288,6 +305,16 @@ public class HomematicIPConnection {
             return this.urlREST + path;
         } finally {
             rl.unlock();
+        }
+    }
+
+    public void setSignalBrightness(Device device, float brightness) throws IOException {
+        var request = new Request<SetSignalBrightnessRequest, HomematicIPObject>(
+                restUrl("/hmip/device/configuration/setSignalBrightness"),
+                new SetSignalBrightnessRequest(device.getId(), brightness, 0));
+        final var response = transport.post(request, HomematicIPObject.class);
+        if (response.getStatusCode() != 200) {
+            throw new IOException("Unexpected response for setSignalBrightness: " + response);
         }
     }
 

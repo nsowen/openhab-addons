@@ -19,7 +19,7 @@
 		<representation-property>uniqueId</representation-property>
 
 		<config-description>
-			<parameter name="accessPointId" type="text" required="true">
+			<parameter name="uniqueId" type="text" required="true">
 				<label>ID</label>
 				<description>The identifier identifies one certain access point.</description>
 			</parameter>

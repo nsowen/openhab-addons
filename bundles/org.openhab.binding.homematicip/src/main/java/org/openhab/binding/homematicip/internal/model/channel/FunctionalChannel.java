@@ -53,12 +53,8 @@ public abstract class FunctionalChannel extends HomematicIPObject {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", FunctionalChannel.class.getSimpleName() + "[", "]")
-                .add("index=" + index)
-                .add("groupIndex=" + groupIndex)
-                .add("label='" + label + "'")
-                .add("functionalChannelType=" + functionalChannelType)
-                .add("groups=" + groups)
-                .toString();
+        return new StringJoiner(", ", FunctionalChannel.class.getSimpleName() + "[", "]").add("index=" + index)
+                .add("groupIndex=" + groupIndex).add("label='" + label + "'")
+                .add("functionalChannelType=" + functionalChannelType).add("groups=" + groups).toString();
     }
 }

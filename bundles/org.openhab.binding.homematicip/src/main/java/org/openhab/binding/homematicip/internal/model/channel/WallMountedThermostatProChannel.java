@@ -20,5 +20,4 @@ public class WallMountedThermostatProChannel extends WallMountedThermostatWithou
     public float getSetPointTemperature() {
         return setPointTemperature;
     }
-
 }

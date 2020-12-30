@@ -29,12 +29,32 @@ public class GetCurrentStateResponse extends HomematicIPObject {
         this.home = home;
     }
 
-    public List<Group> getGroups() {
+    public List<Group> getGroupList() {
         return groups != null ? new ArrayList<>(groups.values()) : Collections.emptyList();
     }
 
-    public List<Device> getDevices() {
+    public Map<String, Group> getGroups() {
+        return groups;
+    }
+
+    public Map<String, Device> getDevices() {
+        return devices;
+    }
+
+    public Map<String, Client> getClients() {
+        return clients;
+    }
+
+    public List<Device> getDeviceList() {
         return devices != null ? new ArrayList<>(devices.values()) : Collections.emptyList();
+    }
+
+    public Optional<Device> getDevice(String id) {
+        return devices != null ? Optional.ofNullable(devices.get(id)) : Optional.empty();
+    }
+
+    public Optional<Group> getGroup(String id) {
+        return groups != null ? Optional.ofNullable(groups.get(id)) : Optional.empty();
     }
 
     public void setGroups(Map<String, Group> groups) {
@@ -45,14 +65,5 @@ public class GetCurrentStateResponse extends HomematicIPObject {
     public String toString() {
         return new StringJoiner(", ", GetCurrentStateResponse.class.getSimpleName() + "[", "]").add("home=" + home)
                 .add("devices=" + devices).add("groups=" + groups).add("clients=" + clients).toString();
-    }
-
-    /**
-     * After being parsed, resolve mappings
-     */
-    @Override
-    public void resolveMappings() {
-        groups.forEach((key, group) -> group.resolveMappings(devices, groups));
-        devices.forEach((key, device) -> device.resolveMappings(devices, groups));
     }
 }

@@ -30,5 +30,4 @@ public abstract class AbstractSabotageDevice extends Device<DeviceSabotageChanne
     public boolean isSabotage() {
         return getBaseFunctionalChannel().map(DeviceSabotageChannel::isSabotage).orElse(false);
     }
-
 }

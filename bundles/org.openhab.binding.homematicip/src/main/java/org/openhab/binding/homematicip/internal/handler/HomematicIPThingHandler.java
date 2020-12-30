@@ -1,106 +1,162 @@
-/**
- * Copyright (c) 2010-2020 Contributors to the openHAB project
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
- */
 package org.openhab.binding.homematicip.internal.handler;
 
-import static org.openhab.binding.homematicip.internal.HomematicIPBindingConstants.*;
+import static org.openhab.binding.homematicip.internal.HomematicIPBindingConstants.UNIQUE_ID;
+import static org.openhab.core.thing.Thing.*;
+import static org.openhab.core.thing.Thing.PROPERTY_VENDOR;
 
-import java.util.Set;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ScheduledFuture;
 
-import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.homematicip.internal.HomematicIPConfiguration;
-import org.openhab.core.thing.ChannelUID;
-import org.openhab.core.thing.Thing;
-import org.openhab.core.thing.ThingStatus;
-import org.openhab.core.thing.ThingTypeUID;
+import org.openhab.binding.homematicip.internal.HomematicIPConnection;
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.device.Device;
+import org.openhab.binding.homematicip.internal.model.group.Group;
+import org.openhab.core.thing.*;
 import org.openhab.core.thing.binding.BaseThingHandler;
 import org.openhab.core.types.Command;
-import org.openhab.core.types.RefreshType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link HomematicIPThingHandler} is responsible for handling commands, which are
- * sent to one of the channels.
+ * Handle for things
  *
- * @author Nils Sowen - Initial contribution
+ * @author Nils Sowen (nils@sowen.de)
+ * @since 2020-12-30
  */
-@NonNullByDefault
-public class HomematicIPThingHandler extends BaseThingHandler {
-
-    public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_ACCESSPOINT);
+public abstract class HomematicIPThingHandler<T extends HomematicIPObject> extends BaseThingHandler {
 
     private final Logger logger = LoggerFactory.getLogger(HomematicIPThingHandler.class);
 
-    private @Nullable HomematicIPConfiguration config;
+    private @Nullable HomematicIPConnection connection;
+    private @Nullable ScheduledFuture<?> scheduledFuture;
+    private boolean propertiesInitializedSuccessfully = false;
 
+    /**
+     * Creates a new instance of this class for the {@link Thing}.
+     *
+     * @param thing the thing that should be handled, not null
+     */
     public HomematicIPThingHandler(Thing thing) {
         super(thing);
     }
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
-        if (CHANNEL_1.equals(channelUID.getId())) {
-            if (command instanceof RefreshType) {
-                // TODO: handle data refresh
-            }
-
-            // TODO: handle command
-
-            // Note: if communication with thing fails for some reason,
-            // indicate that by setting the status with detail information:
-            // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR,
-            // "Could not control device at IP address x.x.x.x");
-        }
+    public void initialize() {
+        logger.debug("Initializing handler.");
+        Bridge bridge = getBridge();
+        initializeThing((bridge == null) ? null : bridge.getStatus());
     }
 
     @Override
-    public void initialize() {
-        config = getConfigAs(HomematicIPConfiguration.class);
+    public void bridgeStatusChanged(ThingStatusInfo bridgeStatusInfo) {
+        logger.debug("bridgeStatusChanged {}", bridgeStatusInfo);
+        initializeThing(bridgeStatusInfo.getStatus());
+    }
 
-        // TODO: Initialize the handler.
-        // The framework requires you to return from this method quickly. Also, before leaving this method a thing
-        // status from one of ONLINE, OFFLINE or UNKNOWN must be set. This might already be the real thing status in
-        // case you can decide it directly.
-        // In case you can not decide the thing status directly (e.g. for long running connection handshake using WAN
-        // access or similar) you should set status UNKNOWN here and then decide the real status asynchronously in the
-        // background.
+    @Override
+    public void handleCommand(ChannelUID channelUID, Command command) {
+        logger.trace("Received command {} for channelUID {}", command, channelUID.getId());
+        var bridgeHandler = getHandler();
+        if (bridgeHandler == null) {
+            logger.warn("Homematic IP handler not found. Cannot handle command without bridge.");
+            return;
+        }
+        var item = getUniqueId().map(this::getThingDetails).orElse(Optional.empty());
+        if (!item.isPresent()) {
+            logger.debug("item not known on bridge. Cannot handle command.");
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                    "@text/offline.conf-error-wrong-unique-id");
+            return;
+        }
+        handleCommand(channelUID, command, item.get());
+    }
 
-        // set the thing status to UNKNOWN temporarily and let the background task decide for the real status.
-        // the framework is then able to reuse the resources from the thing handler initialization.
-        // we set this upfront to reliably check status updates in unit tests.
-        updateStatus(ThingStatus.UNKNOWN);
+    protected abstract void handleCommand(ChannelUID channelUID, Command command, T item);
 
-        // Example for background initialization:
-        scheduler.execute(() -> {
-            boolean thingReachable = true; // <background task with long running initialization here>
-            // when done do:
-            if (thingReachable) {
-                updateStatus(ThingStatus.ONLINE);
+    public abstract HomematicIPHandlerType getThingHandlerType();
+
+    private void initializeThing(@Nullable ThingStatus bridgeStatus) {
+        logger.debug("initializeThing thing {} bridge status {}", getThing().getUID(), bridgeStatus);
+        var uniqueId = getUniqueId();
+        if (uniqueId.isPresent()) {
+            // note: this call implicitly registers our handler as a listener on the bridge
+            if (getHandler() != null && getHandler().isReadyForUse()) {
+                if (bridgeStatus == ThingStatus.ONLINE) {
+                    var object = getThingDetails(uniqueId.get());
+                    if (object.isPresent()) {
+                        initializeProperties(object.get());
+                        updateStatus(ThingStatus.ONLINE);
+                    } else {
+                        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.GONE);
+                    }
+                } else {
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_OFFLINE);
+                }
             } else {
-                updateStatus(ThingStatus.OFFLINE);
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.BRIDGE_UNINITIALIZED);
             }
-        });
+        } else {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
+                    "@text/offline.conf-error-no-unique-id");
+        }
+    }
 
-        // These logging types should be primarily used by bindings
-        // logger.trace("Example trace message");
-        // logger.debug("Example debug message");
-        // logger.warn("Example warn message");
+    private synchronized void initializeProperties(@Nullable HomematicIPObject object) {
+        if (object instanceof Device) {
+            if (!propertiesInitializedSuccessfully && object != null) {
+                var device = (Device) object;
+                Map<String, String> properties = editProperties();
+                String softwareVersion = device.getFirmwareVersion();
+                if (softwareVersion != null) {
+                    properties.put(PROPERTY_FIRMWARE_VERSION, softwareVersion);
+                }
+                String modelId = device.getModelType();
+                properties.put(PROPERTY_MODEL_ID, modelId);
+                String vendor = device.getOem();
+                if (vendor != null) {
+                    properties.put(PROPERTY_VENDOR, vendor);
+                }
+                String uniqueID = device.getId();
+                if (uniqueID != null) {
+                    properties.put(UNIQUE_ID, uniqueID);
+                }
+                updateProperties(properties);
+                propertiesInitializedSuccessfully = true;
+            }
+        } else if (object instanceof Group) {
+            // todo group
+        }
+    }
 
-        // Note: When initialization can NOT be done set the status with more details for further
-        // analysis. See also class ThingStatusDetail for all available status details.
-        // Add a description to give user information to understand why thing does not work as expected. E.g.
-        // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
-        // "Can not access device as username and/or password are invalid");
+    public Optional<String> getUniqueId() {
+        final String configUniqueId = (String) getConfig().get(UNIQUE_ID);
+        logger.debug("config: {}", getConfig().toString());
+        return Optional.ofNullable(configUniqueId);
+    }
+
+    public Optional<T> getThingDetails(String uniqueId) {
+        if (getThingHandlerType() == HomematicIPHandlerType.DEVICE) {
+            return (Optional<T>) getDevice(uniqueId);
+        }
+        if (getThingHandlerType() == HomematicIPHandlerType.GROUP) {
+            return (Optional<T>) getGroup(uniqueId);
+        }
+        throw new IllegalArgumentException("Unknown type: " + getThingHandlerType());
+    }
+
+    protected Optional<Device> getDevice(String id) {
+        var state = getHandler().getCurrentStateResponse();
+        return state.getDevice(id);
+    }
+
+    protected Optional<Group> getGroup(String id) {
+        var state = getHandler().getCurrentStateResponse();
+        return state.getGroup(id);
+    }
+
+    protected HomematicIPBridgeHandler getHandler() {
+        return (HomematicIPBridgeHandler) getBridge().getHandler();
     }
 }

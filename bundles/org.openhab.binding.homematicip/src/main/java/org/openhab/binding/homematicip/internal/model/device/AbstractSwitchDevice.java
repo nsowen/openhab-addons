@@ -12,11 +12,11 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import java.util.StringJoiner;
+
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
 import org.openhab.binding.homematicip.internal.model.channel.SwitchChannel;
 import org.openhab.binding.homematicip.internal.model.common.ProfileMode;
-
-import java.util.StringJoiner;
 
 /**
  * Device that can switch on / off
@@ -42,17 +42,11 @@ public abstract class AbstractSwitchDevice extends Device<SwitchChannel> {
         return getBaseFunctionalChannel().map(SwitchChannel::getUserDesiredProfileMode).orElse(ProfileMode.AUTOMATIC);
     }
 
-
     @Override
     public String toString() {
-        return new StringJoiner(", ", AbstractSwitchDevice.class.getSimpleName() + "[", "]")
-                .add("on=" + isOn())
-                .add("profileMode=" + getProfileMode())
-                .add("userDesiredProfileMode=" + getUserDesiredProfileMode())
-                .add("id='" + getId() + "'")
-                .add("homeId='" + getHomeId() + "'")
-                .add("label='" + getLabel() + "'")
-                .add("firmwareVersion='" + getFirmwareVersion() + "'")
-                .toString();
+        return new StringJoiner(", ", AbstractSwitchDevice.class.getSimpleName() + "[", "]").add("on=" + isOn())
+                .add("profileMode=" + getProfileMode()).add("userDesiredProfileMode=" + getUserDesiredProfileMode())
+                .add("id='" + getId() + "'").add("homeId='" + getHomeId() + "'").add("label='" + getLabel() + "'")
+                .add("firmwareVersion='" + getFirmwareVersion() + "'").toString();
     }
 }

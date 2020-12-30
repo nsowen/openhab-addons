@@ -12,13 +12,12 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
-import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-import org.openhab.binding.homematicip.internal.model.channel.HeatingThermostatChannel;
-import org.openhab.binding.homematicip.internal.model.channel.WallMountedThermostatProChannel;
-import org.openhab.binding.homematicip.internal.model.common.ClimateControlDisplay;
-
 import java.util.Optional;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
+import org.openhab.binding.homematicip.internal.model.channel.WallMountedThermostatProChannel;
+import org.openhab.binding.homematicip.internal.model.common.ClimateControlDisplay;
 
 /**
  * HMIP-WTH, HMIP-WTH-2 (Wall Thermostat with Humidity Sensor) / HMIP-BWTH (Brand Wall Thermostat with Humidity Sensor)
@@ -53,24 +52,18 @@ public class WallMountedThermostatPro extends AbstractOperationLockableDevice {
     }
 
     private Optional<WallMountedThermostatProChannel> getChannel() {
-        return (Optional<WallMountedThermostatProChannel>) getFunctionalChannel(FunctionalChannelType.WALL_MOUNTED_THERMOSTAT_PRO_CHANNEL);
+        return (Optional<WallMountedThermostatProChannel>) getFunctionalChannel(
+                FunctionalChannelType.WALL_MOUNTED_THERMOSTAT_PRO_CHANNEL);
     }
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-                .add("id='" + getId() + "'")
-                .add("homeId='" + getHomeId() + "'")
-                .add("label='" + getLabel() + "'")
+        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]").add("id='" + getId() + "'")
+                .add("homeId='" + getHomeId() + "'").add("label='" + getLabel() + "'")
                 .add("firmwareVersion='" + getFirmwareVersion() + "'")
-                .add("temperatureOffset=" + getTemperatureOffset())
-                .add("actualTemperature=" + getActualTemperature())
-                .add("humidity=" + getHumidity())
-                .add("vaporAmount=" + getVaporAmount())
-                .add("setPointTemperature=" + getSetPointTemperature())
-                .add("display=" + getDisplay())
-                .add("operationLockActive=" + isOperationaLockActive())
-                .toString();
+                .add("temperatureOffset=" + getTemperatureOffset()).add("actualTemperature=" + getActualTemperature())
+                .add("humidity=" + getHumidity()).add("vaporAmount=" + getVaporAmount())
+                .add("setPointTemperature=" + getSetPointTemperature()).add("display=" + getDisplay())
+                .add("operationLockActive=" + isOperationaLockActive()).toString();
     }
-
 }

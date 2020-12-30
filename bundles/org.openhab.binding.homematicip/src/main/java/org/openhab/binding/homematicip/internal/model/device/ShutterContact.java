@@ -12,13 +12,12 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
-import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-import org.openhab.binding.homematicip.internal.model.channel.HeatingThermostatChannel;
-import org.openhab.binding.homematicip.internal.model.channel.ShutterContactChannel;
-import org.openhab.binding.homematicip.internal.model.common.WindowState;
-
 import java.util.Optional;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
+import org.openhab.binding.homematicip.internal.model.channel.ShutterContactChannel;
+import org.openhab.binding.homematicip.internal.model.common.WindowState;
 
 /**
  * HMIP-SWDO (Door / Window Contact - optical) / HMIP-SWDO-I (Door / Window Contact Invisible - optical)
@@ -43,8 +42,6 @@ public class ShutterContact extends AbstractSabotageDevice {
     @Override
     public String toString() {
         return new StringJoiner(", ", ShutterContact.class.getSimpleName() + "[", "]")
-                .add("windowState=" + getWindowState())
-                .add("eventDelay=" + getEventDelay())
-                .toString();
+                .add("windowState=" + getWindowState()).add("eventDelay=" + getEventDelay()).toString();
     }
 }

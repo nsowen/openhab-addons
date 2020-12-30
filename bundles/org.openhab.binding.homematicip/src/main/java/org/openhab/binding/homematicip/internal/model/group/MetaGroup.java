@@ -12,12 +12,12 @@
  */
 package org.openhab.binding.homematicip.internal.model.group;
 
-import org.openhab.binding.homematicip.internal.model.device.Device;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.openhab.binding.homematicip.internal.model.device.Device;
 
 /**
  * Group-specific implementation
@@ -37,7 +37,6 @@ public class MetaGroup extends Group {
     private String groupIcon;
 
     public MetaGroup() {
-        System.out.println("new meta");
     }
 
     public Boolean getLowBat() {

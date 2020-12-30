@@ -28,5 +28,4 @@ public class WallMountedThermostatWithoutDisplayChannel extends FunctionalChanne
     public double getVaporAmount() {
         return vaporAmount;
     }
-
 }

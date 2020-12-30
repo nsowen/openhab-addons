@@ -50,5 +50,4 @@ public class HumidityWarningRuleGroup extends Group {
     public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
         this.outdoorClimateSensorDevice = devices.get(outdoorClimateSensor);
     }
-
 }

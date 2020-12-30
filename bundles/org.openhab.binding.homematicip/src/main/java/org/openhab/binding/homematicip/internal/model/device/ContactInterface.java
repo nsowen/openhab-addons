@@ -12,13 +12,12 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
-import org.openhab.binding.homematicip.internal.model.channel.ContactInterfaceChannel;
-import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-import org.openhab.binding.homematicip.internal.model.channel.ShutterContactChannel;
-import org.openhab.binding.homematicip.internal.model.common.WindowState;
-
 import java.util.Optional;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.channel.ContactInterfaceChannel;
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
+import org.openhab.binding.homematicip.internal.model.common.WindowState;
 
 /**
  * Device-specific implementation
@@ -37,15 +36,13 @@ public class ContactInterface extends Device<ContactInterfaceChannel> {
     }
 
     private Optional<ContactInterfaceChannel> getChannel() {
-        return (Optional<ContactInterfaceChannel>) getFunctionalChannel(FunctionalChannelType.CONTACT_INTERFACE_CHANNEL);
+        return (Optional<ContactInterfaceChannel>) getFunctionalChannel(
+                FunctionalChannelType.CONTACT_INTERFACE_CHANNEL);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", ContactInterface.class.getSimpleName() + "[", "]")
-                .add("windowState=" + getWindowState())
-                .add("eventDelay=" + getEventDelay())
-                .toString();
+                .add("windowState=" + getWindowState()).add("eventDelay=" + getEventDelay()).toString();
     }
-
 }

@@ -23,5 +23,4 @@ public class AnalogRoomControlChannel extends FunctionalChannel {
     public float getSetPointTemperature() {
         return setPointTemperature;
     }
-
 }

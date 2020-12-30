@@ -23,5 +23,4 @@ public class ClimateSensorChannel extends FunctionalChannel {
     public double getVaporAmount() {
         return vaporAmount;
     }
-
 }

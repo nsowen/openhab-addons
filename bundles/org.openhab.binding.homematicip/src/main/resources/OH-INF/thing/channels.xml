@@ -7,11 +7,8 @@
 	<!-- Brightness Channel -->
 	<channel-type id="brightness">
 		<item-type>Dimmer</item-type>
-		<label>Brightness</label>
-		<description>The brightness channel allows to control the brightness of a light.
-			It is also possible to switch the
-			light on and off.
-		</description>
+		<label>Button Brightness</label>
+		<description>Control brightness of button</description>
 		<category>Light</category>
 		<tags>
 			<tag>Lighting</tag>

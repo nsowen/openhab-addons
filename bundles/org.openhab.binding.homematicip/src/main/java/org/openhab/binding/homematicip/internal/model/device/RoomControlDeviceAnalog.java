@@ -12,15 +12,13 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
-import org.openhab.binding.homematicip.internal.model.channel.AnalogRoomControlChannel;
-import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-import org.openhab.binding.homematicip.internal.model.channel.WallMountedThermostatProChannel;
-import org.openhab.binding.homematicip.internal.model.common.ClimateControlDisplay;
-
 import java.util.StringJoiner;
 
+import org.openhab.binding.homematicip.internal.model.channel.AnalogRoomControlChannel;
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
+
 /**
- * ALPHA-IP-RBG    (Alpha IP Wall Thermostat Display)
+ * ALPHA-IP-RBG (Alpha IP Wall Thermostat Display)
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
@@ -45,15 +43,10 @@ public class RoomControlDeviceAnalog extends Device<AnalogRoomControlChannel> {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-                .add("id='" + getId() + "'")
-                .add("homeId='" + getHomeId() + "'")
-                .add("label='" + getLabel() + "'")
+        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]").add("id='" + getId() + "'")
+                .add("homeId='" + getHomeId() + "'").add("label='" + getLabel() + "'")
                 .add("firmwareVersion='" + getFirmwareVersion() + "'")
-                .add("temperatureOffset=" + getTemperatureOffset())
-                .add("actualTemperature=" + getActualTemperature())
-                .add("setPointTemperature=" + getSetPointTemperature())
-                .toString();
+                .add("temperatureOffset=" + getTemperatureOffset()).add("actualTemperature=" + getActualTemperature())
+                .add("setPointTemperature=" + getSetPointTemperature()).toString();
     }
-
 }

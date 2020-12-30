@@ -12,10 +12,10 @@
  */
 package org.openhab.binding.homematicip.internal.transport;
 
-import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
-
 import java.util.Objects;
 import java.util.StringJoiner;
+
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 
 /**
  * Response class

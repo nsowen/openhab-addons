@@ -12,10 +12,10 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import java.util.StringJoiner;
+
 import org.openhab.binding.homematicip.internal.model.channel.ClimateSensorChannel;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-
-import java.util.StringJoiner;
 
 /**
  * HMIP-STHO (Temperature and Humidity Sensor outdoor)
@@ -43,15 +43,10 @@ public class TemperatureHumiditySensorOutdoor extends Device<ClimateSensorChanne
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]")
-                .add("id='" + getId() + "'")
-                .add("homeId='" + getHomeId() + "'")
-                .add("label='" + getLabel() + "'")
+        return new StringJoiner(", ", getClass().getSimpleName() + "[", "]").add("id='" + getId() + "'")
+                .add("homeId='" + getHomeId() + "'").add("label='" + getLabel() + "'")
                 .add("firmwareVersion='" + getFirmwareVersion() + "'")
-                .add("actualTemperature=" + getActualTemperature())
-                .add("humidity=" + getHumidity())
-                .add("vaporAmount=" + getVaporAmount())
-                .toString();
+                .add("actualTemperature=" + getActualTemperature()).add("humidity=" + getHumidity())
+                .add("vaporAmount=" + getVaporAmount()).toString();
     }
-
 }

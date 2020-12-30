@@ -13,7 +13,7 @@
 package org.openhab.binding.homematicip.internal.model.device;
 
 /**
- * HMIP-SWDM /  HMIP-SWDM-B2  (Door / Window Contact - magnetic )
+ * HMIP-SWDM / HMIP-SWDM-B2 (Door / Window Contact - magnetic )
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27

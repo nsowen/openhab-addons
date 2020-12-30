@@ -12,10 +12,10 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import java.util.StringJoiner;
+
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
 import org.openhab.binding.homematicip.internal.model.channel.WallMountedThermostatWithoutDisplayChannel;
-
-import java.util.StringJoiner;
 
 /**
  * HMIP-STH (Temperature and Humidity Sensor without display - indoor)
@@ -30,11 +30,13 @@ public class TemperatureHumiditySensorWithoutDisplay extends Device<WallMountedT
     }
 
     public float getTemperatureOffset() {
-        return getBaseFunctionalChannel().map(WallMountedThermostatWithoutDisplayChannel::getTemperatureOffset).orElse(0.0f);
+        return getBaseFunctionalChannel().map(WallMountedThermostatWithoutDisplayChannel::getTemperatureOffset)
+                .orElse(0.0f);
     }
 
     public float getActualTemperature() {
-        return getBaseFunctionalChannel().map(WallMountedThermostatWithoutDisplayChannel::getActualTemperature).orElse(0.0f);
+        return getBaseFunctionalChannel().map(WallMountedThermostatWithoutDisplayChannel::getActualTemperature)
+                .orElse(0.0f);
     }
 
     public int getHumidity() {
@@ -48,14 +50,9 @@ public class TemperatureHumiditySensorWithoutDisplay extends Device<WallMountedT
     @Override
     public String toString() {
         return new StringJoiner(", ", TemperatureHumiditySensorWithoutDisplay.class.getSimpleName() + "[", "]")
-                .add("id='" + getId() + "'")
-                .add("homeId='" + getHomeId() + "'")
-                .add("label='" + getLabel() + "'")
+                .add("id='" + getId() + "'").add("homeId='" + getHomeId() + "'").add("label='" + getLabel() + "'")
                 .add("firmwareVersion='" + getFirmwareVersion() + "'")
-                .add("temperatureOffset=" + getTemperatureOffset())
-                .add("actualTemperature=" + getActualTemperature())
-                .add("humidity=" + getHumidity())
-                .add("vaporAmount=" + getVaporAmount())
-                .toString();
+                .add("temperatureOffset=" + getTemperatureOffset()).add("actualTemperature=" + getActualTemperature())
+                .add("humidity=" + getHumidity()).add("vaporAmount=" + getVaporAmount()).toString();
     }
 }

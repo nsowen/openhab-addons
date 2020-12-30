@@ -13,7 +13,7 @@
 package org.openhab.binding.homematicip.internal.model.device;
 
 /**
- *  HMIP-PS (Pluggable Switch), HMIP-PCBS (Switch Circuit Board - 1 channel)
+ * HMIP-PS (Pluggable Switch), HMIP-PCBS (Switch Circuit Board - 1 channel)
  *
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27

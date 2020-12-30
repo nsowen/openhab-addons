@@ -12,13 +12,10 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
-import java.lang.reflect.ParameterizedType;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
-import org.openhab.binding.homematicip.internal.HomematicIPConnection;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
@@ -34,8 +31,6 @@ import org.openhab.binding.homematicip.internal.model.group.Group;
  * @since 2020-12-24
  */
 public abstract class Device<T extends FunctionalChannel> extends HomematicIPObject {
-
-    private HomematicIPConnection connection;
 
     protected String id;
     protected String homeId;
@@ -58,17 +53,6 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
     protected Map<FunctionalChannelType, FunctionalChannel> functionalChannelMap = new ConcurrentHashMap<>();
 
     protected FunctionalChannelType baseFunctionalChannelType = FunctionalChannelType.DEVICE_BASE;
-
-    public void initialize(HomematicIPConnection connection) {
-        this.connection = connection;
-    }
-
-    protected HomematicIPConnection getConnection() {
-        if (connection == null) {
-            throw new IllegalStateException("Not initialized");
-        }
-        return connection;
-    }
 
     public String getId() {
         return id;
@@ -147,10 +131,7 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
         if (channel != null) {
             return Optional.of(channel);
         }
-        var _channel = functionalChannels
-                .values()
-                .stream()
-                .filter(fc -> fc.getFunctionalChannelType() == type)
+        var _channel = functionalChannels.values().stream().filter(fc -> fc.getFunctionalChannelType() == type)
                 .findFirst();
         _channel.ifPresent(c -> functionalChannelMap.put(type, c));
         return _channel;

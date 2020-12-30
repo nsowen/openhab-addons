@@ -30,5 +30,4 @@ public abstract class AbstractOperationLockableDevice extends Device<DeviceOpera
     public boolean isOperationaLockActive() {
         return getBaseFunctionalChannel().map(DeviceOperationLockChannel::isOperationLockActive).orElse(false);
     }
-
 }

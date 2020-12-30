@@ -12,10 +12,11 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import java.io.IOException;
+import java.util.StringJoiner;
+
 import org.openhab.binding.homematicip.internal.model.channel.AccessControllerChannel;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
-
-import java.util.StringJoiner;
 
 /**
  * Device-specific implementation
@@ -41,15 +42,16 @@ public class HomeControlAccessPoint extends Device<AccessControllerChannel> {
         return getBaseFunctionalChannel().map(AccessControllerChannel::getSignalBrightness).orElse(0.0f);
     }
 
+    public void setSignalBrightness(float brightness) throws IOException {
+        getConnection().setSignalBrightness(this, brightness);
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", HomeControlAccessPoint.class.getSimpleName() + "[", "]")
-                .add("id='" + getId() + "'")
-                .add("label='" + getLabel() + "'")
-                .add("firmwareVersion='" + getFirmwareVersion() + "'")
-                .add("dutyCycleLevel=" + getDutyCycleLevel())
-                .add("accessPointPriority=" + getAccessPointPriority())
-                .add("signalBrightness=" + getSignalBrightness())
+                .add("id='" + getId() + "'").add("label='" + getLabel() + "'")
+                .add("firmwareVersion='" + getFirmwareVersion() + "'").add("dutyCycleLevel=" + getDutyCycleLevel())
+                .add("accessPointPriority=" + getAccessPointPriority()).add("signalBrightness=" + getSignalBrightness())
                 .toString();
     }
 }

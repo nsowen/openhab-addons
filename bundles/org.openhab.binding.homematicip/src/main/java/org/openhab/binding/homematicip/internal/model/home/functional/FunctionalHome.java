@@ -12,9 +12,9 @@
  */
 package org.openhab.binding.homematicip.internal.model.home.functional;
 
-import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
-
 import java.util.List;
+
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 
 /**
  * Functional Home
@@ -51,5 +51,4 @@ public abstract class FunctionalHome extends HomematicIPObject {
     public void setActive(boolean active) {
         this.active = active;
     }
-
 }

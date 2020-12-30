@@ -19,9 +19,9 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.channel.Channel;
 import org.openhab.binding.homematicip.internal.model.device.Device;
-import org.openhab.binding.homematicip.internal.model.response.GetCurrentStateResponse;
 
 /**
  * New class.
@@ -29,7 +29,7 @@ import org.openhab.binding.homematicip.internal.model.response.GetCurrentStateRe
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public abstract class Group {
+public abstract class Group extends HomematicIPObject {
 
     protected String id;
     protected String homeId;
@@ -78,7 +78,8 @@ public abstract class Group {
     }
 
     public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
-        this.devices = getChannels().stream().map(channel -> devices.get(channel.getDeviceId())).collect(Collectors.toList());
+        this.devices = getChannels().stream().map(channel -> devices.get(channel.getDeviceId()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -88,6 +89,4 @@ public abstract class Group {
                 .add("lastStatusUpdate=" + lastStatusUpdate).add("unreach='" + unreach + "'").add("type='" + type + "'")
                 .add("channels=" + channels).toString();
     }
-
-
 }

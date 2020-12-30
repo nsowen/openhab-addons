@@ -15,11 +15,14 @@ package org.openhab.binding.homematicip.internal.model;
 import java.io.Reader;
 import java.time.Instant;
 
+import org.openhab.binding.homematicip.internal.HomematicIPConnection;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.group.Group;
 import org.openhab.binding.homematicip.internal.model.gson.*;
 import org.openhab.binding.homematicip.internal.model.home.functional.FunctionalHome;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,6 +35,8 @@ import com.google.gson.GsonBuilder;
  */
 public class HomematicIPObject {
 
+    private final static Logger logger = LoggerFactory.getLogger(HomematicIPObject.class);
+    private HomematicIPConnection connection;
     protected final static Gson gson;
 
     static {
@@ -45,9 +50,7 @@ public class HomematicIPObject {
     }
 
     public static HomematicIPObject fromJson(String json, Class<? extends HomematicIPObject> clazz) {
-        var object = gson.fromJson(json, clazz);
-        object.resolveMappings();
-        return object;
+        return gson.fromJson(json, clazz);
     }
 
     public static HomematicIPObject fromJson(Reader json, Class<? extends HomematicIPObject> clazz) {
@@ -58,8 +61,15 @@ public class HomematicIPObject {
         return gson.toJson(object);
     }
 
-    public void resolveMappings() {
-        // no-op
+    public void initialize(HomematicIPConnection connection) {
+        logger.trace("Initialized object: {} with {}", getClass().getSimpleName(), connection);
+        this.connection = connection;
     }
 
+    protected HomematicIPConnection getConnection() {
+        if (connection == null) {
+            throw new IllegalStateException("Not initialized");
+        }
+        return connection;
+    }
 }

@@ -3,14 +3,13 @@ package org.openhab.binding.homematicip.internal.discovery;
 import static org.openhab.binding.homematicip.internal.HomematicIPBindingConstants.*;
 
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.homematicip.internal.handler.HomematicIPAccessPointHandler;
 import org.openhab.binding.homematicip.internal.handler.HomematicIPBridgeHandler;
-import org.openhab.binding.homematicip.internal.handler.HomematicIPThingHandler;
 import org.openhab.binding.homematicip.internal.model.device.Device;
+import org.openhab.binding.homematicip.internal.model.group.Group;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
@@ -35,13 +34,14 @@ import org.slf4j.LoggerFactory;
 public class HomematicIPDiscoveryService extends AbstractDiscoveryService
         implements DiscoveryService, ThingHandlerService {
 
+    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPE_UIDS = HomematicIPAccessPointHandler.SUPPORTED_THING_TYPES_UIDS;
+
     private final Logger logger = LoggerFactory.getLogger(HomematicIPDiscoveryService.class);
     private @Nullable HomematicIPBridgeHandler bridgeHandler;
     private @Nullable ThingUID bridgeUID;
 
     public HomematicIPDiscoveryService() throws IllegalArgumentException {
-        super(Stream.concat(HomematicIPThingHandler.SUPPORTED_THING_TYPES_UIDS.stream(),
-                HomematicIPBridgeHandler.SUPPORTED_THING_TYPES_UIDS.stream()).collect(Collectors.toSet()), 300);
+        super(SUPPORTED_THING_TYPE_UIDS, 300);
         logger.debug("Created HomematicIPDiscoveryService");
     }
 
@@ -58,8 +58,7 @@ public class HomematicIPDiscoveryService extends AbstractDiscoveryService
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        return Stream.concat(HomematicIPThingHandler.SUPPORTED_THING_TYPES_UIDS.stream(),
-                HomematicIPBridgeHandler.SUPPORTED_THING_TYPES_UIDS.stream()).collect(Collectors.toSet());
+        return SUPPORTED_THING_TYPE_UIDS;
     }
 
     @Override
@@ -78,7 +77,12 @@ public class HomematicIPDiscoveryService extends AbstractDiscoveryService
         final var handler = bridgeHandler;
         if (handler != null) {
             handler.getDevices().forEach(this::addDeviceDiscovery);
+            handler.getGroups().forEach(this::addGroupDiscovery);
         }
+    }
+
+    private void addGroupDiscovery(Group group) {
+        logger.debug("Adding discovery: {}", group);
     }
 
     public void addDeviceDiscovery(Device device) {
