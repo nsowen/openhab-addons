@@ -5,7 +5,7 @@ import java.util.StringJoiner;
 /**
  * Access controller channel
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class AccessControllerChannel extends DeviceBaseChannel {

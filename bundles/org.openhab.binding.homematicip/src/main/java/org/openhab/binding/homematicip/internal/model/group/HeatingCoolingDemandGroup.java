@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -15,11 +15,19 @@ package org.openhab.binding.homematicip.internal.model.group;
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class HeatingCoolingDemandGroup extends Group {
 
     private boolean on;
     private float dimLevel;
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public float getDimLevel() {
+        return dimLevel;
+    }
 }

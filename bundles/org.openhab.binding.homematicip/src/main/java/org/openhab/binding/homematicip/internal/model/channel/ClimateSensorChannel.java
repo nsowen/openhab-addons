@@ -3,7 +3,7 @@ package org.openhab.binding.homematicip.internal.model.channel;
 /**
  * Climate sensor channel
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class ClimateSensorChannel extends FunctionalChannel {

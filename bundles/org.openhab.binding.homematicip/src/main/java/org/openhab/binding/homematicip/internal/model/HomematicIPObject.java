@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -13,7 +13,6 @@
 package org.openhab.binding.homematicip.internal.model;
 
 import java.io.Reader;
-import java.io.Serializable;
 import java.time.Instant;
 
 import org.openhab.binding.homematicip.internal.HomematicIPConnection;
@@ -31,10 +30,10 @@ import com.google.gson.GsonBuilder;
 /**
  * Generic object
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-24
  */
-public class HomematicIPObject implements Serializable {
+public class HomematicIPObject {
 
     private final static Logger logger = LoggerFactory.getLogger(HomematicIPObject.class);
     private HomematicIPConnection connection;

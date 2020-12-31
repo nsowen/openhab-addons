@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -18,7 +18,7 @@ import org.openhab.binding.homematicip.internal.model.common.ShadingStateType;
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class ExtendedLinkedShutterGroup extends Group {
@@ -35,4 +35,52 @@ public class ExtendedLinkedShutterGroup extends Group {
     protected double secondaryShadingLevel;
     protected ShadingStateType secondaryShadingStateType = ShadingStateType.NOT_EXISTENT;
     protected GroupVisibility groupVisibility = GroupVisibility.INVISIBLE_GROUP_AND_CONTROL;
+
+    public boolean isDutyCycle() {
+        return dutyCycle;
+    }
+
+    public boolean isLowBat() {
+        return lowBat;
+    }
+
+    public double getShutterLevel() {
+        return shutterLevel;
+    }
+
+    public boolean isProcessing() {
+        return processing;
+    }
+
+    public double getSlatsLevel() {
+        return slatsLevel;
+    }
+
+    public double getTopSlatsLevel() {
+        return topSlatsLevel;
+    }
+
+    public double getBottomSlatsLevel() {
+        return bottomSlatsLevel;
+    }
+
+    public double getPrimaryShadingLevel() {
+        return primaryShadingLevel;
+    }
+
+    public ShadingStateType getPrimaryShadingStateType() {
+        return primaryShadingStateType;
+    }
+
+    public double getSecondaryShadingLevel() {
+        return secondaryShadingLevel;
+    }
+
+    public ShadingStateType getSecondaryShadingStateType() {
+        return secondaryShadingStateType;
+    }
+
+    public GroupVisibility getGroupVisibility() {
+        return groupVisibility;
+    }
 }

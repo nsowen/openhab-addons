@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -124,16 +124,17 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
     }
 
     public Optional<T> getBaseFunctionalChannel() {
-        return (Optional<T>) getFunctionalChannel(baseFunctionalChannelType);
+        return (Optional<T>) getFunctionalChannel(baseFunctionalChannelType, baseFunctionalChannelType.getClazz());
     }
 
-    public Optional<? extends FunctionalChannel> getFunctionalChannel(FunctionalChannelType type) {
-        var channel = functionalChannelMap.get(type);
+    public <F extends FunctionalChannel> Optional<F> getFunctionalChannel(FunctionalChannelType type,
+            Class<F> channelType) {
+        var channel = channelType.cast(functionalChannelMap.get(type));
         if (channel != null) {
             return Optional.of(channel);
         }
         var _channel = functionalChannels.values().stream().filter(fc -> fc.getFunctionalChannelType() == type)
-                .findFirst();
+                .findFirst().map(channelType::cast);
         _channel.ifPresent(c -> functionalChannelMap.put(type, c));
         return _channel;
     }

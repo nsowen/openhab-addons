@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -22,16 +22,16 @@ import org.openhab.binding.homematicip.internal.model.device.Device;
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class MetaGroup extends Group {
 
-    private Boolean lowBat;
-    private Boolean sabotage;
+    private boolean lowBat;
+    private boolean sabotage;
     private boolean configPending;
     private boolean dutyCycle;
-    // todo type private String incorrectPositioned;
+    private boolean incorrectPositioned;
     private List<String> groups = Collections.emptyList();
     private List<Group> resolvedGroups = Collections.emptyList();
     private String groupIcon;
@@ -39,12 +39,16 @@ public class MetaGroup extends Group {
     public MetaGroup() {
     }
 
-    public Boolean getLowBat() {
+    public boolean isLowBat() {
         return lowBat;
     }
 
-    public Boolean getSabotage() {
+    public boolean isSabotage() {
         return sabotage;
+    }
+
+    public boolean isIncorrectPositioned() {
+        return incorrectPositioned;
     }
 
     public boolean isConfigPending() {

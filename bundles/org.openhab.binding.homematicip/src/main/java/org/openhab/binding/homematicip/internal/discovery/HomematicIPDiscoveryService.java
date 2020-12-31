@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Discovers new things connected to the HomematicIP bridge
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-28
  */
 @NonNullByDefault

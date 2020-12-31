@@ -5,7 +5,7 @@ import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 /**
  * Sets the signal brightnesss
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-30
  */
 public class SetSignalBrightnessRequest extends HomematicIPObject {
@@ -18,5 +18,17 @@ public class SetSignalBrightnessRequest extends HomematicIPObject {
         this.channelIndex = channelIndex;
         this.deviceId = id;
         this.signalBrightness = brightness;
+    }
+
+    public int getChannelIndex() {
+        return channelIndex;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
+    }
+
+    public float getSignalBrightness() {
+        return signalBrightness;
     }
 }

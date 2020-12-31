@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  * <p>
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -34,7 +34,7 @@ import com.google.gson.JsonParseException;
  * Transport for Homematic IP requests using OpenHAB's {@link HttpClientFactory HttpClientFactory}
  * implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-24
  */
 public class HttpTransport implements Transport, WebSocketListener {

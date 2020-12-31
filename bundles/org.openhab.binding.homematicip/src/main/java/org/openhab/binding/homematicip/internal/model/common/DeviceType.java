@@ -6,7 +6,7 @@ import org.openhab.binding.homematicip.internal.model.group.*;
 /**
  * Device type mapping
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public enum DeviceType {

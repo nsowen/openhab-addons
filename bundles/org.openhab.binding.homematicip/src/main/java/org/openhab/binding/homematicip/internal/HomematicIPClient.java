@@ -12,7 +12,7 @@ import org.openhab.binding.homematicip.internal.model.home.Home;
 /**
  * Access to the Homematic IP system
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-28
  */
 @NonNullByDefault

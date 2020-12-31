@@ -11,7 +11,7 @@ import org.openhab.binding.homematicip.internal.model.home.Home;
 /**
  * State change event received from Homematic IP WebSocket
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-31
  */
 public class PushEvent extends HomematicIPObject {

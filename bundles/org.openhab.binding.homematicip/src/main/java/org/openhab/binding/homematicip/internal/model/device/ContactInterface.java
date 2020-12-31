@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -22,7 +22,7 @@ import org.openhab.binding.homematicip.internal.model.common.WindowState;
 /**
  * Device-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class ContactInterface extends Device<ContactInterfaceChannel> {
@@ -36,8 +36,7 @@ public class ContactInterface extends Device<ContactInterfaceChannel> {
     }
 
     private Optional<ContactInterfaceChannel> getChannel() {
-        return (Optional<ContactInterfaceChannel>) getFunctionalChannel(
-                FunctionalChannelType.CONTACT_INTERFACE_CHANNEL);
+        return getFunctionalChannel(FunctionalChannelType.CONTACT_INTERFACE_CHANNEL, ContactInterfaceChannel.class);
     }
 
     @Override

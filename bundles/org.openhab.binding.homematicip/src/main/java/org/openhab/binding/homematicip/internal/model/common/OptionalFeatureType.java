@@ -3,7 +3,7 @@ package org.openhab.binding.homematicip.internal.model.common;
 /**
  * New class.
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public enum OptionalFeatureType {

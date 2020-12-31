@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -23,10 +23,10 @@ import com.google.gson.*;
 /**
  * Deserialize device / polymorphism by type
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
-public class DeviceDeserializer implements JsonDeserializer<Device> {
+public class DeviceDeserializer implements JsonDeserializer<Device<?>> {
 
     @Override
     public Device deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext context)
@@ -34,7 +34,7 @@ public class DeviceDeserializer implements JsonDeserializer<Device> {
         JsonObject obj = jsonElement.getAsJsonObject();
         String typeString = obj.get("type").getAsString();
         final var deviceType = DeviceType.valueOf(typeString);
-        final var device = (Device) (deviceType != null ? context.deserialize(jsonElement, deviceType.getClazz())
+        final var device = (Device<?>) (deviceType != null ? context.deserialize(jsonElement, deviceType.getClazz())
                 : context.deserialize(jsonElement, GenericDevice.class));
         device.setType(typeString);
         return device;

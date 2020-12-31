@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -21,16 +21,44 @@ import org.openhab.binding.homematicip.internal.model.common.SmokeDetectorAlarmT
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class AlarmSwitchingGroup extends Group {
 
-    private String on;
+    private boolean on;
     private float dimLevel;
     private Instant onTime;
     private AcousticAlarmSignal signalAcoustic;
     private OpticalAlarmSignal signalOptical;
     private SmokeDetectorAlarmType smokeDetectorAlarmType;
     private boolean acousticFeedbackEnabled;
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public float getDimLevel() {
+        return dimLevel;
+    }
+
+    public Instant getOnTime() {
+        return onTime;
+    }
+
+    public AcousticAlarmSignal getSignalAcoustic() {
+        return signalAcoustic;
+    }
+
+    public OpticalAlarmSignal getSignalOptical() {
+        return signalOptical;
+    }
+
+    public SmokeDetectorAlarmType getSmokeDetectorAlarmType() {
+        return smokeDetectorAlarmType;
+    }
+
+    public boolean isAcousticFeedbackEnabled() {
+        return acousticFeedbackEnabled;
+    }
 }

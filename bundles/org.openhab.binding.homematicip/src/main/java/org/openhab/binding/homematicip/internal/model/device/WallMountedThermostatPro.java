@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -22,7 +22,7 @@ import org.openhab.binding.homematicip.internal.model.common.ClimateControlDispl
 /**
  * HMIP-WTH, HMIP-WTH-2 (Wall Thermostat with Humidity Sensor) / HMIP-BWTH (Brand Wall Thermostat with Humidity Sensor)
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class WallMountedThermostatPro extends AbstractOperationLockableDevice {
@@ -52,8 +52,8 @@ public class WallMountedThermostatPro extends AbstractOperationLockableDevice {
     }
 
     private Optional<WallMountedThermostatProChannel> getChannel() {
-        return (Optional<WallMountedThermostatProChannel>) getFunctionalChannel(
-                FunctionalChannelType.WALL_MOUNTED_THERMOSTAT_PRO_CHANNEL);
+        return getFunctionalChannel(FunctionalChannelType.WALL_MOUNTED_THERMOSTAT_PRO_CHANNEL,
+                WallMountedThermostatProChannel.class);
     }
 
     @Override

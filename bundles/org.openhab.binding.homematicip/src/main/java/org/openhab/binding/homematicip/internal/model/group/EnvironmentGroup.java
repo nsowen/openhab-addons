@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -15,7 +15,7 @@ package org.openhab.binding.homematicip.internal.model.group;
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class EnvironmentGroup extends Group {
@@ -25,4 +25,24 @@ public class EnvironmentGroup extends Group {
     private boolean raining;
     private double windSpeed = 0.0;
     private double humidity = 0.0;
+
+    public double getActualTemperature() {
+        return actualTemperature;
+    }
+
+    public double getIllumination() {
+        return illumination;
+    }
+
+    public boolean isRaining() {
+        return raining;
+    }
+
+    public double getWindSpeed() {
+        return windSpeed;
+    }
+
+    public double getHumidity() {
+        return humidity;
+    }
 }

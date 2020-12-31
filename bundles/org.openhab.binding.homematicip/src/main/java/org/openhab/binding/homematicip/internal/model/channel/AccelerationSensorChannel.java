@@ -8,7 +8,7 @@ import org.openhab.binding.homematicip.internal.model.common.NotificationSoundTy
 /**
  * New class.
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class AccelerationSensorChannel extends FunctionalChannel {

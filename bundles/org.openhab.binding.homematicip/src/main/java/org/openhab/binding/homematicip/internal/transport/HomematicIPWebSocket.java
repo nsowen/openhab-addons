@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  * The {@link HomematicIPWebSocket} implements the websocket for receiving constant updates from the Homematic IP
  * cloud.
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-31
  */
 @NonNullByDefault

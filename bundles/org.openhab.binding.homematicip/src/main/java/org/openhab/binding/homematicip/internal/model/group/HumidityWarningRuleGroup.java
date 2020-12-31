@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -16,13 +16,14 @@ import java.time.Instant;
 import java.util.Map;
 
 import org.openhab.binding.homematicip.internal.model.channel.Channel;
+import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.common.HumidityValidationType;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class HumidityWarningRuleGroup extends Group {
@@ -36,18 +37,19 @@ public class HumidityWarningRuleGroup extends Group {
     protected Instant lastExecutionTimestamp;
     protected Instant lastStatusUpdate;
     protected Channel outdoorClimateSensor;
-    protected Device outdoorClimateSensorDevice;
+    protected Device<? extends FunctionalChannel> outdoorClimateSensorDevice;
 
     public Device getOutdoorClimateSensorDevice() {
         return outdoorClimateSensorDevice;
     }
 
-    public void setOutdoorClimateSensorDevice(Device outdoorClimateSensorDevice) {
+    public void setOutdoorClimateSensorDevice(Device<? extends FunctionalChannel> outdoorClimateSensorDevice) {
         this.outdoorClimateSensorDevice = outdoorClimateSensorDevice;
     }
 
     @Override
     public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
+        super.resolveMappings(devices, groups);
         this.outdoorClimateSensorDevice = devices.get(outdoorClimateSensor);
     }
 }

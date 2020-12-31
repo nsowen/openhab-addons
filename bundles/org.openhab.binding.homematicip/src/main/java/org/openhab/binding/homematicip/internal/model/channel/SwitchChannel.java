@@ -5,7 +5,7 @@ import org.openhab.binding.homematicip.internal.model.common.ProfileMode;
 /**
  * Switch channel
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class SwitchChannel extends FunctionalChannel {

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -12,11 +12,13 @@
  */
 package org.openhab.binding.homematicip.internal.model.device;
 
+import org.openhab.binding.homematicip.internal.model.channel.DeviceBaseChannel;
+
 /**
  * Generic Homematic IP device
  *
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public class GenericDevice {
+public class GenericDevice extends Device<DeviceBaseChannel> {
 }

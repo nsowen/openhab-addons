@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Handle for things
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-30
  */
 public abstract class HomematicIPThingHandler<T extends HomematicIPObject> extends BaseThingHandler {

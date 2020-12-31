@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -15,7 +15,7 @@ package org.openhab.binding.homematicip.internal.model.group;
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class SwitchGroupBase extends Group {
@@ -24,4 +24,20 @@ public class SwitchGroupBase extends Group {
     protected float dimLevel;
     protected boolean dutyCycle;
     protected boolean lowBat;
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public float getDimLevel() {
+        return dimLevel;
+    }
+
+    public boolean isDutyCycle() {
+        return dutyCycle;
+    }
+
+    public boolean isLowBat() {
+        return lowBat;
+    }
 }

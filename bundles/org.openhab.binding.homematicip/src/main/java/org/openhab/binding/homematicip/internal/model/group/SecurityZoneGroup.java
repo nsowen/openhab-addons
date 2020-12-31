@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -14,10 +14,12 @@ package org.openhab.binding.homematicip.internal.model.group;
 
 import java.util.List;
 
+import org.openhab.binding.homematicip.internal.model.common.WindowState;
+
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class SecurityZoneGroup extends Group {
@@ -25,8 +27,36 @@ public class SecurityZoneGroup extends Group {
     private boolean active;
     private boolean silent;
     private List<String> ignorableDevices;
-    private String windowState;
-    // todo private Object motionDetected;
-    // todo private Object sabotage;
-    // todo private Object presenceDetected;
+    private WindowState windowState;
+    private boolean motionDetected;
+    private boolean sabotage;
+    private boolean presenceDetected;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public boolean isSilent() {
+        return silent;
+    }
+
+    public List<String> getIgnorableDevices() {
+        return ignorableDevices;
+    }
+
+    public WindowState getWindowState() {
+        return windowState;
+    }
+
+    public boolean isMotionDetected() {
+        return motionDetected;
+    }
+
+    public boolean isSabotage() {
+        return sabotage;
+    }
+
+    public boolean isPresenceDetected() {
+        return presenceDetected;
+    }
 }

@@ -5,7 +5,7 @@ import org.openhab.binding.homematicip.internal.model.common.ValveState;
 /**
  * Channel for heating thermostats
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class HeatingThermostatChannel extends FunctionalChannel {

@@ -5,7 +5,7 @@ import org.openhab.binding.homematicip.internal.model.common.WindowState;
 /**
  * Shutter contact details
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class ShutterContactChannel extends FunctionalChannel {

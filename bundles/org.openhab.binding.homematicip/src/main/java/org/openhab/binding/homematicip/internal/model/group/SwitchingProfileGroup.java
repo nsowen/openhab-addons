@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
+ * Copyright (c) 2010-2020 Contributors to the openHAB project
  *
  * See the NOTICE file(s) distributed with this work for additional
  * information.
@@ -17,7 +17,7 @@ import org.openhab.binding.homematicip.internal.model.common.ProfileMode;
 /**
  * Group-specific implementation
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class SwitchingProfileGroup extends Group {
@@ -25,4 +25,16 @@ public class SwitchingProfileGroup extends Group {
     private boolean on;
     private float dimLevel;
     private ProfileMode profileMode = ProfileMode.MANUAL;
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public float getDimLevel() {
+        return dimLevel;
+    }
+
+    public ProfileMode getProfileMode() {
+        return profileMode;
+    }
 }

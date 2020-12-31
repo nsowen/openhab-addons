@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Homematic IP Bridge handler
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-26
  */
 public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler
@@ -137,7 +137,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler
     /**
      * Check last state for devices being added, changed, or removed,
      * and notify ThingHandlers accordingly
-     * 
+     *
      * @param devices map of id->devices
      */
     private void updateDevices(Map<String, Device> devices) {
@@ -174,7 +174,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler
     /**
      * Check last state for groups being added, changed, or removed,
      * and notify ThingHandlers accordingly
-     * 
+     *
      * @param groups map of id->group
      */
     private void updateGroups(Map<String, Group> groups) {
@@ -211,7 +211,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler
     /**
      * Check last state for home being changed
      * and notify ThingHandlers accordingly
-     * 
+     *
      * @param home new home
      */
     private void updateHome(Home home) {

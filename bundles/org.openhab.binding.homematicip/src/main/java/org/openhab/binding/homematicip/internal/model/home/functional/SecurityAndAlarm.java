@@ -11,7 +11,7 @@ import org.openhab.binding.homematicip.internal.model.common.SecurityZoneType;
 /**
  * Security and alarm group
  *
- * @author Nils Sowen (nils@sowen.de)
+ * @author Nils Sowen - Initial contribution
  * @since 2020-12-27
  */
 public class SecurityAndAlarm extends FunctionalHome {
