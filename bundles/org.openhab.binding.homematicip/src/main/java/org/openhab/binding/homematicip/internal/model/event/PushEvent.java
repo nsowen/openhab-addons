@@ -1,12 +1,12 @@
 package org.openhab.binding.homematicip.internal.model.event;
 
+import java.util.StringJoiner;
+
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.group.Group;
 import org.openhab.binding.homematicip.internal.model.home.Home;
-
-import java.util.StringJoiner;
 
 /**
  * State change event received from Homematic IP WebSocket

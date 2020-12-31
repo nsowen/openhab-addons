@@ -2,11 +2,7 @@ package org.openhab.binding.homematicip.internal.model.event;
 
 import java.util.*;
 
-import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
-import org.openhab.binding.homematicip.internal.model.device.Device;
-import org.openhab.binding.homematicip.internal.model.group.Group;
-import org.openhab.binding.homematicip.internal.model.home.Home;
 
 /**
  * State change event received from Homematic IP WebSocket
@@ -28,8 +24,6 @@ public class StateChange extends HomematicIPObject {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", StateChange.class.getSimpleName() + "[", "]")
-                .add("events=" + events)
-                .toString();
+        return new StringJoiner(", ", StateChange.class.getSimpleName() + "[", "]").add("events=" + events).toString();
     }
 }
