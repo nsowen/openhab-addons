@@ -11,13 +11,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
-import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.openhab.binding.homematicip.internal.model.event.StateChange;
 import org.openhab.binding.homematicip.internal.transport.HttpTransport;
-import org.openhab.core.io.net.http.WebSocketFactory;
 import org.openhab.core.io.net.http.internal.ExtensibleTrustManagerImpl;
 import org.openhab.core.io.net.http.internal.WebClientFactoryImpl;
 
