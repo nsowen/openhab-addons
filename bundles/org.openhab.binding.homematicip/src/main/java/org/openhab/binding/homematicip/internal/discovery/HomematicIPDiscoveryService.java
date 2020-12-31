@@ -8,8 +8,10 @@ import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.homematicip.internal.handler.HomematicIPAccessPointHandler;
 import org.openhab.binding.homematicip.internal.handler.HomematicIPBridgeHandler;
+import org.openhab.binding.homematicip.internal.model.HomematicIPThing;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.group.Group;
+import org.openhab.binding.homematicip.internal.model.home.Home;
 import org.openhab.core.config.discovery.AbstractDiscoveryService;
 import org.openhab.core.config.discovery.DiscoveryResult;
 import org.openhab.core.config.discovery.DiscoveryResultBuilder;
@@ -81,7 +83,7 @@ public class HomematicIPDiscoveryService extends AbstractDiscoveryService
         }
     }
 
-    private void addGroupDiscovery(Group group) {
+    public void addGroupDiscovery(Group group) {
         logger.debug("Adding discovery: {}", group);
     }
 
@@ -110,23 +112,30 @@ public class HomematicIPDiscoveryService extends AbstractDiscoveryService
             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withThingType(thingTypeUID)
                     .withProperties(properties).withBridge(bridgeUID).withRepresentationProperty(UNIQUE_ID)
                     .withLabel(device.getLabel()).build();
-            logger.debug("discovered supported device of type '{}' and model '{}' with id {}", device.getDeviceType(),
+            logger.debug("discovered supported device of type '{}' and model '{}' with id {}", device.getType(),
                     modelId, device.getId());
             thingDiscovered(discoveryResult);
         } else {
-            logger.debug("discovered unsupported device of type '{}' and model '{}' with id {}", device.getDeviceType(),
+            logger.debug("discovered unsupported device of type '{}' and model '{}' with id {}", device.getType(),
                     modelId, device.getId());
         }
     }
 
-    private @Nullable ThingUID getThingUID(Device device) {
+    public void removeDiscovery(HomematicIPThing thing) {
+        var thingUID = getThingUID(thing);
+        if (thingUID != null) {
+            thingRemoved(thingUID);
+        }
+    }
+
+    private @Nullable ThingUID getThingUID(HomematicIPThing homematicIPThing) {
         ThingUID localBridgeUID = bridgeUID;
         if (localBridgeUID != null) {
-            ThingTypeUID thingTypeUID = getThingTypeUID(device);
+            ThingTypeUID thingTypeUID = getThingTypeUID(homematicIPThing);
             if (thingTypeUID != null && getSupportedThingTypes().contains(thingTypeUID)) {
-                logger.debug("Created thingUID: {}, id={}, localBridge={}", thingTypeUID, device.getId(),
+                logger.debug("Created thingUID: {}, id={}, localBridge={}", thingTypeUID, homematicIPThing.getId(),
                         localBridgeUID);
-                return new ThingUID(thingTypeUID, localBridgeUID, device.getId());
+                return new ThingUID(thingTypeUID, localBridgeUID, homematicIPThing.getId());
             } else {
                 logger.warn("Not supported: {}, supported are: {}", thingTypeUID, getSupportedThingTypes());
             }
@@ -136,10 +145,10 @@ public class HomematicIPDiscoveryService extends AbstractDiscoveryService
         return null;
     }
 
-    private @Nullable ThingTypeUID getThingTypeUID(Device device) {
+    private @Nullable ThingTypeUID getThingTypeUID(HomematicIPThing homematicIPThing) {
         String thingTypeId = null;
-        logger.debug("device: " + device.getDeviceType());
-        if (device.getDeviceType().equals("HOME_CONTROL_ACCESS_POINT")) {
+        logger.debug("device: " + homematicIPThing.getType());
+        if (homematicIPThing.getType().equals("HOME_CONTROL_ACCESS_POINT")) {
             thingTypeId = "accesspoint"; // TODO: create thing type ids for each device
         }
         return thingTypeId != null ? new ThingTypeUID(BINDING_ID, thingTypeId) : null;
@@ -167,5 +176,9 @@ public class HomematicIPDiscoveryService extends AbstractDiscoveryService
         if (handler != null) {
             handler.unregisterDiscoveryListener();
         }
+    }
+
+    public void addHomeDiscovery(Home home) {
+        // todo home discovery
     }
 }

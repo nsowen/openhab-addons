@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -24,7 +25,7 @@ class HomematicIPConnectionTest {
     private HomematicIPConnection connection;
     private String uuid;
     private String accessPointId;
-    private ExecutorService scheduler;
+    private ScheduledExecutorService scheduler;
 
     @BeforeEach
     void setUp() throws NoSuchAlgorithmException, IOException, ExecutionException, InterruptedException {
@@ -37,8 +38,8 @@ class HomematicIPConnectionTest {
             }
         };
         factory.activate(Collections.emptyMap());
-        this.scheduler = Executors.newSingleThreadExecutor();
-        this.transport = new HttpTransport(factory, null);
+        this.scheduler = Executors.newSingleThreadScheduledExecutor();
+        this.transport = new HttpTransport(factory, null, scheduler);
         this.connection = new HomematicIPConnection(uuid, accessPointId, transport);
         this.connection.setAuthToken("C72117F990F2C5B1F6715286F071BE9AA2F70C7644BB480DD7323B3AA72996B4");
         this.connection.initializeAsync(scheduler).get();

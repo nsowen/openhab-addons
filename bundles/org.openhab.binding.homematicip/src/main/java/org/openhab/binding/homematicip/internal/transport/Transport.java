@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 import org.eclipse.jdt.annotation.Nullable;
+import org.openhab.binding.homematicip.internal.HomematicIPEventListener;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 
 /**
@@ -117,9 +118,8 @@ public interface Transport {
      *
      * @param wssUrl websocket url as received from lookup process
      * @param listener listener to post new received data to
-     * @param <U>
      */
-    <U> void enableWebSocket(String wssUrl, WebSocketListener<U> listener);
+    void enableWebSocket(String wssUrl, HomematicIPEventListener listener) throws IOException;
 
     /**
      * Disables the websocket connection.

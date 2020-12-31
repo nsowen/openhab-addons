@@ -13,6 +13,7 @@
 package org.openhab.binding.homematicip.internal.model;
 
 import java.io.Reader;
+import java.io.Serializable;
 import java.time.Instant;
 
 import org.openhab.binding.homematicip.internal.HomematicIPConnection;
@@ -33,7 +34,7 @@ import com.google.gson.GsonBuilder;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class HomematicIPObject {
+public class HomematicIPObject implements Serializable {
 
     private final static Logger logger = LoggerFactory.getLogger(HomematicIPObject.class);
     private HomematicIPConnection connection;

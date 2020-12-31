@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.HomematicIPThing;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannel;
 import org.openhab.binding.homematicip.internal.model.channel.FunctionalChannelType;
 import org.openhab.binding.homematicip.internal.model.common.ConnectionType;
@@ -30,7 +31,7 @@ import org.openhab.binding.homematicip.internal.model.group.Group;
  * @author Nils Sowen (n.sowen@2scale.net)
  * @since 2020-12-24
  */
-public abstract class Device<T extends FunctionalChannel> extends HomematicIPObject {
+public abstract class Device<T extends FunctionalChannel> extends HomematicIPObject implements HomematicIPThing {
 
     protected String id;
     protected String homeId;
@@ -45,7 +46,7 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
     protected int modelId;
     protected String modelType;
     protected String serializedGlobalTradeItemNumber;
-    protected String deviceType;
+    protected String type;
     protected String availableFirmwareVersion;
     protected boolean permanentlyReachable;
 
@@ -106,8 +107,8 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
         return serializedGlobalTradeItemNumber;
     }
 
-    public String getDeviceType() {
-        return deviceType;
+    public String getType() {
+        return type;
     }
 
     public String getAvailableFirmwareVersion() {
@@ -137,8 +138,8 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
         return _channel;
     }
 
-    public void setDeviceType(String typeString) {
-        this.deviceType = typeString;
+    public void setType(String typeString) {
+        this.type = typeString;
     }
 
     public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
@@ -153,9 +154,10 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
                 .add("firmwareVersion='" + firmwareVersion + "'").add("connectionType=" + connectionType)
                 .add("modelId=" + modelId).add("modelType='" + modelType + "'")
                 .add("serializedGlobalTradeItemNumber='" + serializedGlobalTradeItemNumber + "'")
-                .add("deviceType='" + deviceType + "'")
+                .add("deviceType='" + type + "'")
                 .add("availableFirmwareVersion='" + availableFirmwareVersion + "'")
                 .add("permanentlyReachable=" + permanentlyReachable).add("functionalChannels=" + functionalChannels)
                 .add("baseChannel=" + baseFunctionalChannelType).toString();
     }
+
 }

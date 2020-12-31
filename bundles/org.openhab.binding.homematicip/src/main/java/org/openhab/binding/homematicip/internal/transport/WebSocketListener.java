@@ -18,7 +18,8 @@ package org.openhab.binding.homematicip.internal.transport;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public interface WebSocketListener<T> {
-
-    void onReceive(T data);
+public interface WebSocketListener {
+    void onWebSocketReceive(String data);
+    void onWebSocketClose();
+    void onWebSocketError(Throwable cause);
 }

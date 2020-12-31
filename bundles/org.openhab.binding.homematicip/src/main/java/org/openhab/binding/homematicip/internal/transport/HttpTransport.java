@@ -23,7 +23,9 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.*;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.openhab.binding.homematicip.internal.HomematicIPEventListener;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.event.StateChange;
 import org.openhab.core.io.net.http.HttpClientFactory;
 import org.openhab.core.io.net.http.WebSocketFactory;
 
@@ -36,22 +38,25 @@ import com.google.gson.JsonParseException;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-24
  */
-public class HttpTransport implements Transport {
+public class HttpTransport implements Transport, WebSocketListener {
 
     private final Map<String, String> defaultHeaders = new HashMap<>();
     private final WebSocketFactory webSocketFactory;
     private final HttpClient client;
+    private final ScheduledExecutorService scheduler;
 
-    private WebSocketClient wssClient;
+    private HomematicIPEventListener websocketListener;
+    private HomematicIPWebSocket websocket;
 
     /**
      * Creates a new http transport based on OpenHABs primary {@link HttpClientFactory HttpClientFactory}
-     * 
+     *
      * @param httpClientFactory client factory given by OpenHAB
      * @param webSocketFactory web socket factory given by OpenHAB
      */
-    public HttpTransport(HttpClientFactory httpClientFactory, WebSocketFactory webSocketFactory) {
+    public HttpTransport(HttpClientFactory httpClientFactory, WebSocketFactory webSocketFactory, ScheduledExecutorService scheduler) {
         this.webSocketFactory = webSocketFactory;
+        this.scheduler = scheduler;
         this.client = httpClientFactory.createHttpClient("homeamticip");
         client.setConnectTimeout(5 * 1000L);
         client.setIdleTimeout(5 * 1000L);
@@ -67,7 +72,7 @@ public class HttpTransport implements Transport {
 
     /**
      * Adds data to the default header map used in each request
-     * 
+     *
      * @param key name of header
      * @param value value of header
      */
@@ -77,7 +82,7 @@ public class HttpTransport implements Transport {
 
     /**
      * Removes header from default header map (used in each request)
-     * 
+     *
      * @param header header name
      */
     private void removeDefaultHeader(String header) {
@@ -96,6 +101,10 @@ public class HttpTransport implements Transport {
         } else {
             setDefaultHeader(HEADER_AUTHTOKEN, authToken);
         }
+    }
+
+    public String getClientAuth() {
+        return defaultHeaders.get(HEADER_CLIENTAUTH);
     }
 
     @Override
@@ -154,10 +163,43 @@ public class HttpTransport implements Transport {
     }
 
     @Override
-    public <U> void enableWebSocket(String wssUrl, WebSocketListener<U> listener) {
+    public void enableWebSocket(String wssUrl, HomematicIPEventListener listener) throws IOException {
+        try {
+            synchronized (this) {
+                websocket = new HomematicIPWebSocket(this, scheduler, wssUrl, webSocketFactory, getClientAuth());
+                websocketListener = listener;
+            }
+        } catch (Exception e) {
+            throw new IOException("Cannot create websocket: " + e.getMessage(), e);
+        }
     }
 
     @Override
     public void disableWebSocket() {
+        synchronized (this) {
+            websocket.stop();
+            websocket = null;
+            websocketListener = null;
+        }
+    }
+
+    @Override
+    public void onWebSocketReceive(String data) {
+        if (data != null && data.length() > 0) {
+            var stateChange = (StateChange) HomematicIPObject.fromJson(data, StateChange.class);
+            if (websocketListener != null && stateChange != null) {
+                websocketListener.onReceive(stateChange);
+            }
+        }
+    }
+
+    @Override
+    public void onWebSocketClose() {
+
+    }
+
+    @Override
+    public void onWebSocketError(Throwable cause) {
+
     }
 }

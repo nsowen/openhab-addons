@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringJoiner;
 
+import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.HomematicIPThing;
 import org.openhab.binding.homematicip.internal.model.common.ApExchangeState;
 import org.openhab.binding.homematicip.internal.model.common.DeviceUpdateStrategy;
 import org.openhab.binding.homematicip.internal.model.common.FunctionalHomeType;
@@ -28,7 +30,7 @@ import org.openhab.binding.homematicip.internal.model.home.functional.Functional
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public class Home {
+public class Home extends HomematicIPObject implements HomematicIPThing {
 
     private String id;
     private Weather weather;
@@ -72,5 +74,125 @@ public class Home {
                 .add("deviceUpdateStrategy=" + deviceUpdateStrategy)
                 .add("lastReadyForUpdateTimestamp=" + lastReadyForUpdateTimestamp)
                 .add("functionalHomes=" + functionalHomes).toString();
+    }
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    @Override
+    public String getHomeId() {
+        return id;
+    }
+
+    @Override
+    public String getLabel() {
+        return "home";
+    }
+
+    @Override
+    public String getType() {
+        return "home";
+    }
+
+    public Weather getWeather() {
+        return weather;
+    }
+
+    public List<String> getMetaGroups() {
+        return metaGroups;
+    }
+
+    public List<String> getClients() {
+        return clients;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public String getCurrentAPVersion() {
+        return currentAPVersion;
+    }
+
+    public String getAvailableAPVersion() {
+        return availableAPVersion;
+    }
+
+    public String getTimeZoneId() {
+        return timeZoneId;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public boolean isPinAssigned() {
+        return pinAssigned;
+    }
+
+    public boolean isLiveUpdateSupported() {
+        return isLiveUpdateSupported;
+    }
+
+    public float getDutyCycle() {
+        return dutyCycle;
+    }
+
+    public float getCarrierSense() {
+        return carrierSense;
+    }
+
+    public HomeUpdateState getUpdateState() {
+        return updateState;
+    }
+
+    public float getPowerMeterUnitPrice() {
+        return powerMeterUnitPrice;
+    }
+
+    public String getPowerMeterCurrency() {
+        return powerMeterCurrency;
+    }
+
+    public DeviceUpdateStrategy getDeviceUpdateStrategy() {
+        return deviceUpdateStrategy;
+    }
+
+    public long getLastReadyForUpdateTimestamp() {
+        return lastReadyForUpdateTimestamp;
+    }
+
+    public Map<FunctionalHomeType, FunctionalHome> getFunctionalHomes() {
+        return functionalHomes;
+    }
+
+    public String getInboxGroup() {
+        return inboxGroup;
+    }
+
+    public String getApExchangeClientId() {
+        return apExchangeClientId;
+    }
+
+    public ApExchangeState getApExchangeState() {
+        return apExchangeState;
+    }
+
+    public VoiceControlSettings getVoiceControlSettings() {
+        return voiceControlSettings;
+    }
+
+    public List<String> getRuleGroups() {
+        return ruleGroups;
+    }
+
+    public LiveOTAUStatus getLiveOTAUStatus() {
+        return liveOTAUStatus;
+    }
+
+    public Map<String, AccessPointStatusUpdate> getAccessPointUpdateStates() {
+        return accessPointUpdateStates;
     }
 }

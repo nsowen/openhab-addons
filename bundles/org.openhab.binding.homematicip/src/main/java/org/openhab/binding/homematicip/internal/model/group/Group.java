@@ -20,6 +20,7 @@ import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
+import org.openhab.binding.homematicip.internal.model.HomematicIPThing;
 import org.openhab.binding.homematicip.internal.model.channel.Channel;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 
@@ -29,7 +30,7 @@ import org.openhab.binding.homematicip.internal.model.device.Device;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-27
  */
-public abstract class Group extends HomematicIPObject {
+public abstract class Group extends HomematicIPObject implements HomematicIPThing {
 
     protected String id;
     protected String homeId;

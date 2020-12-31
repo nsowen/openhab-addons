@@ -3,10 +3,11 @@ package org.openhab.binding.homematicip.internal.handler;
 import static org.openhab.binding.homematicip.internal.HomematicIPBindingConstants.THING_TYPE_BRIDGE;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.annotation.Nullable;
@@ -15,6 +16,7 @@ import org.openhab.binding.homematicip.internal.HomematicIPClient;
 import org.openhab.binding.homematicip.internal.HomematicIPConfiguration;
 import org.openhab.binding.homematicip.internal.HomematicIPConnection;
 import org.openhab.binding.homematicip.internal.discovery.HomematicIPDiscoveryService;
+import org.openhab.binding.homematicip.internal.model.HomematicIPThing;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.group.Group;
 import org.openhab.binding.homematicip.internal.model.home.Home;
@@ -44,11 +46,20 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     private final Logger logger = LoggerFactory.getLogger(HomematicIPBridgeHandler.class);
     private final HttpClientFactory httpClientFactory;
     private final WebSocketFactory webSocketFactory;
+
     private HomematicIPConnection connection;
     private HomematicIPConfiguration bridgeConfig;
-    private @Nullable volatile GetCurrentStateResponse state;
 
+    private final ReentrantLock updateLock = new ReentrantLock();
+
+    private final Map<String, Device> lastDevices = new ConcurrentHashMap<>();
+    private final Map<String, Group> lastGroups = new ConcurrentHashMap<>();
+    private final AtomicReference<Home> lastHome = new AtomicReference<>();
+
+    private @Nullable volatile GetCurrentStateResponse state;
     private @Nullable HomematicIPDiscoveryService discoveryService;
+
+    private Map<String,ThingStatusListener> thingStatusListeners = new ConcurrentHashMap<>();
 
     public HomematicIPBridgeHandler(Bridge bridge, HttpClientFactory httpClientFactory,
             WebSocketFactory webSocketFactory) {
@@ -101,23 +112,115 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
             return;
         }
         connection.loadCurrentState(scheduler).thenAcceptAsync((response) -> {
-            logger.debug("State done");
-            synchronized (this) {
-                state = response;
+            updateLock.lock();
+            try {
+                logger.trace("Update received, triggering listeners");
+                updateDevices(response.getDevices());
+                updateGroups(response.getGroups());
+                updateHome(response.getHome());
+                logger.trace("Done triggering listeners");
+            } finally {
+                updateLock.unlock();
             }
-            logger.debug("Starting scan");
             discoveryService.startScan();
         }, scheduler);
         logger.debug("Update call done");
     }
 
     /**
-     * Get current groups
-     *
-     * @return
+     * Check last state for devices being added, changed, or removed,
+     * and notify ThingHandlers accordingly
+     * @param devices map of id->devices
      */
-    public List<Group> getGroups() {
-        return state != null ? state.getGroupList() : Collections.emptyList();
+    private void updateDevices(Map<String, Device> devices) {
+        var lastDevicesCopy = new HashMap<>(lastDevices);
+        devices.forEach((id, device) -> {
+            var listener = thingStatusListeners.get(id);
+            if (listener == null) { // not yet added as thing
+                logger.trace("Homematic IP device '{}' added", device.getId());
+                if (discoveryService != null && !lastDevices.containsKey(id)) {
+                    discoveryService.addDeviceDiscovery(device);
+                }
+                lastDevices.put(id, device);
+            } else {
+                if (listener.onStateChanged(device)) {
+                    lastDevices.put(id, device);
+                }
+            }
+            lastDevicesCopy.remove(id);
+        });
+        // check for removed devices and notify
+        lastDevicesCopy.forEach((id, device) -> {
+            logger.trace("Homematic IP device '{}' removed", device.getId());
+            lastDevices.remove(id);
+            var listener = thingStatusListeners.get(id);
+            if (listener != null) {
+                listener.onRemoved();
+            }
+            if (discoveryService != null) {
+                discoveryService.removeDiscovery(device);
+            }
+        });
+    }
+
+    /**
+     * Check last state for groups being added, changed, or removed,
+     * and notify ThingHandlers accordingly
+     * @param groups map of id->group
+     */
+    private void updateGroups(Map<String, Group> groups) {
+        var lastGroupCopy = new HashMap<>(lastGroups);
+        groups.forEach((id, group) -> {
+            var listener = thingStatusListeners.get(id);
+            if (listener == null) { // not yet added as thing
+                logger.trace("Homematic IP group '{}' added", group.getId());
+                if (discoveryService != null && !lastGroups.containsKey(id)) {
+                    discoveryService.addGroupDiscovery(group);
+                }
+                lastGroups.put(id, group);
+            } else {
+                if (listener.onStateChanged(group)) {
+                    lastGroups.put(id, group);
+                }
+            }
+            lastGroupCopy.remove(id);
+        });
+        // check for removed devices and notify
+        lastGroupCopy.forEach((id, group) -> {
+            logger.trace("Homematic IP group '{}' removed", group.getId());
+            lastGroups.remove(id);
+            var listener = thingStatusListeners.get(id);
+            if (listener != null) {
+                listener.onRemoved();
+            }
+            if (discoveryService != null) {
+                discoveryService.removeDiscovery(group);
+            }
+        });
+    }
+
+    /**
+     * Check last state for home being changed
+     * and notify ThingHandlers accordingly
+     * @param home new home
+     */
+    private void updateHome(Home home) {
+        var lastHomeCopy = lastHome.get();
+        if (lastHomeCopy != home) {
+            var listener = thingStatusListeners.get(home.getHomeId());
+            if (listener == null) {
+                logger.trace("Homematic IP home '{}' added", home.getId());
+                if (discoveryService != null) {
+                    discoveryService.addHomeDiscovery(home);
+                }
+                lastHome.set(home);
+            } else {
+                logger.trace("Homematic IP home '{}' updated", home.getId());
+                if (listener.onStateChanged(home)) {
+                    lastHome.set(home);
+                }
+            }
+        }
     }
 
     /**
@@ -125,12 +228,32 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
      *
      * @return
      */
-    public List<Device> getDevices() {
-        return state != null ? state.getDeviceList() : Collections.emptyList();
+    public Collection<Group> getGroups() {
+        return lastGroups != null ? lastGroups.values() : Collections.emptyList();
     }
 
-    public GetCurrentStateResponse getCurrentStateResponse() {
-        return state;
+    @Override
+    public Optional<Group> getGroupById(String id) {
+        return Optional.ofNullable(lastGroups.get(id));
+    }
+
+    /**
+     * Get current groups
+     *
+     * @return
+     */
+    public Collection<Device> getDevices() {
+        return lastDevices != null ? lastDevices.values() : Collections.emptyList();
+    }
+
+    @Override
+    public Optional<Device> getDeviceById(String id) {
+        return Optional.ofNullable(lastDevices.get(id));
+    }
+
+    @Override
+    public Optional<Home> getHome() {
+        return Optional.ofNullable(lastHome.get());
     }
 
     /**
@@ -140,15 +263,6 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
      */
     public boolean isReadyForUse() {
         return connection != null && connection.isReadyForUse() && state != null;
-    }
-
-    /**
-     * Get current groups
-     *
-     * @return
-     */
-    public Home getHome() {
-        return state != null ? state.getHome() : null;
     }
 
     /**
@@ -210,9 +324,10 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
         if (discoveryService == null) {
             discoveryService = listener;
             getDevices().forEach(listener::addDeviceDiscovery);
+            getGroups().forEach(listener::addGroupDiscovery);
+            getHome().ifPresent(listener::addHomeDiscovery);
             return true;
         }
-
         return false;
     }
 
@@ -222,7 +337,6 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
             discoveryService = null;
             return true;
         }
-
         return false;
     }
 
@@ -231,7 +345,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     }
 
     private HomematicIPConnection createConnection() {
-        var transport = new HttpTransport(httpClientFactory, webSocketFactory);
+        var transport = new HttpTransport(httpClientFactory, webSocketFactory, scheduler);
         var connection = new HomematicIPConnection(getThing().getUID().getAsString(), bridgeConfig.getAccessPointId(),
                 bridgeConfig.getAuthToken(), transport);
         return connection;
@@ -240,5 +354,20 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     @Override
     public Collection<ConfigStatusMessage> getConfigStatus() {
         return Collections.emptySet();
+    }
+
+    @Override
+    public boolean registerThingStatusListener(ThingStatusListener listener) {
+        final String id = listener.getId();
+        if (!thingStatusListeners.containsKey(id)) {
+            thingStatusListeners.put(id, listener);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean unregisterThingStatusListener(ThingStatusListener lightStatusListener) {
+        return thingStatusListeners.remove(lightStatusListener.getId()) != null;
     }
 }

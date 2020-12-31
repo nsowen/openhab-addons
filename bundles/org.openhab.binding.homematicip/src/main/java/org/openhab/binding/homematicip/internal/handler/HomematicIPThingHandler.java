@@ -138,22 +138,12 @@ public abstract class HomematicIPThingHandler<T extends HomematicIPObject> exten
 
     public Optional<T> getThingDetails(String uniqueId) {
         if (getThingHandlerType() == HomematicIPHandlerType.DEVICE) {
-            return (Optional<T>) getDevice(uniqueId);
+            return (Optional<T>) getHandler().getDeviceById(uniqueId);
         }
         if (getThingHandlerType() == HomematicIPHandlerType.GROUP) {
-            return (Optional<T>) getGroup(uniqueId);
+            return (Optional<T>) getHandler().getGroupById(uniqueId);
         }
         throw new IllegalArgumentException("Unknown type: " + getThingHandlerType());
-    }
-
-    protected Optional<Device> getDevice(String id) {
-        var state = getHandler().getCurrentStateResponse();
-        return state.getDevice(id);
-    }
-
-    protected Optional<Group> getGroup(String id) {
-        var state = getHandler().getCurrentStateResponse();
-        return state.getGroup(id);
     }
 
     protected HomematicIPBridgeHandler getHandler() {

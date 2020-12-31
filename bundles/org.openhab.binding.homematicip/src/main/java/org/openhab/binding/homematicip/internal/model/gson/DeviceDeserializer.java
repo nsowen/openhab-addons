@@ -36,7 +36,7 @@ public class DeviceDeserializer implements JsonDeserializer<Device> {
         final var deviceType = DeviceType.valueOf(typeString);
         final var device = (Device) (deviceType != null ? context.deserialize(jsonElement, deviceType.getClazz())
                 : context.deserialize(jsonElement, GenericDevice.class));
-        device.setDeviceType(typeString);
+        device.setType(typeString);
         return device;
     }
 }
