@@ -1,13 +1,13 @@
 package org.openhab.binding.homematicip.internal;
 
+import java.util.Optional;
+
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.openhab.binding.homematicip.internal.discovery.HomematicIPDiscoveryService;
 import org.openhab.binding.homematicip.internal.handler.ThingStatusListener;
 import org.openhab.binding.homematicip.internal.model.device.Device;
 import org.openhab.binding.homematicip.internal.model.group.Group;
 import org.openhab.binding.homematicip.internal.model.home.Home;
-
-import java.util.Optional;
 
 /**
  * Access to the Homematic IP system
@@ -55,5 +55,4 @@ public interface HomematicIPClient {
     Optional<Device> getDeviceById(String id);
 
     Optional<Home> getHome();
-
 }

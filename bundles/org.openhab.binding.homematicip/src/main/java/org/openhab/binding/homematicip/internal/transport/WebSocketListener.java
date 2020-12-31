@@ -20,6 +20,8 @@ package org.openhab.binding.homematicip.internal.transport;
  */
 public interface WebSocketListener {
     void onWebSocketReceive(String data);
+
     void onWebSocketClose();
+
     void onWebSocketError(Throwable cause);
 }

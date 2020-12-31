@@ -7,20 +7,15 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jdt.annotation.Nullable;
-import org.openhab.binding.homematicip.internal.HomematicIPBindingConstants;
-import org.openhab.binding.homematicip.internal.HomematicIPClient;
-import org.openhab.binding.homematicip.internal.HomematicIPConfiguration;
-import org.openhab.binding.homematicip.internal.HomematicIPConnection;
+import org.openhab.binding.homematicip.internal.*;
 import org.openhab.binding.homematicip.internal.discovery.HomematicIPDiscoveryService;
-import org.openhab.binding.homematicip.internal.model.HomematicIPThing;
 import org.openhab.binding.homematicip.internal.model.device.Device;
+import org.openhab.binding.homematicip.internal.model.event.StateChange;
 import org.openhab.binding.homematicip.internal.model.group.Group;
 import org.openhab.binding.homematicip.internal.model.home.Home;
-import org.openhab.binding.homematicip.internal.model.response.GetCurrentStateResponse;
 import org.openhab.binding.homematicip.internal.transport.HttpTransport;
 import org.openhab.core.config.core.Configuration;
 import org.openhab.core.config.core.status.ConfigStatusMessage;
@@ -38,7 +33,8 @@ import org.slf4j.LoggerFactory;
  * @author Nils Sowen (nils@sowen.de)
  * @since 2020-12-26
  */
-public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implements HomematicIPClient {
+public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler
+        implements HomematicIPClient, HomematicIPEventListener {
 
     public static final Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Set.of(THING_TYPE_BRIDGE);
     private final static int PAIRING_ATTEMPT_MAX = 10;
@@ -55,11 +51,9 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     private final Map<String, Device> lastDevices = new ConcurrentHashMap<>();
     private final Map<String, Group> lastGroups = new ConcurrentHashMap<>();
     private final AtomicReference<Home> lastHome = new AtomicReference<>();
-
-    private @Nullable volatile GetCurrentStateResponse state;
     private @Nullable HomematicIPDiscoveryService discoveryService;
 
-    private Map<String,ThingStatusListener> thingStatusListeners = new ConcurrentHashMap<>();
+    private Map<String, ThingStatusListener> thingStatusListeners = new ConcurrentHashMap<>();
 
     public HomematicIPBridgeHandler(Bridge bridge, HttpClientFactory httpClientFactory,
             WebSocketFactory webSocketFactory) {
@@ -118,6 +112,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
                 updateDevices(response.getDevices());
                 updateGroups(response.getGroups());
                 updateHome(response.getHome());
+                enableEventListener();
                 logger.trace("Done triggering listeners");
             } finally {
                 updateLock.unlock();
@@ -127,9 +122,22 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
         logger.debug("Update call done");
     }
 
+    private void enableEventListener() {
+        try {
+            connection.enableEventListener(this);
+        } catch (IOException e) {
+            logger.error("Cannot enable event listener: {}", e.getMessage(), e);
+        }
+    }
+
+    private void disableEventListener() {
+        connection.disableEventListener();
+    }
+
     /**
      * Check last state for devices being added, changed, or removed,
      * and notify ThingHandlers accordingly
+     * 
      * @param devices map of id->devices
      */
     private void updateDevices(Map<String, Device> devices) {
@@ -166,10 +174,11 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     /**
      * Check last state for groups being added, changed, or removed,
      * and notify ThingHandlers accordingly
+     * 
      * @param groups map of id->group
      */
     private void updateGroups(Map<String, Group> groups) {
-        var lastGroupCopy = new HashMap<>(lastGroups);
+        var lastGroupsCopy = new HashMap<>(lastGroups);
         groups.forEach((id, group) -> {
             var listener = thingStatusListeners.get(id);
             if (listener == null) { // not yet added as thing
@@ -183,10 +192,10 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
                     lastGroups.put(id, group);
                 }
             }
-            lastGroupCopy.remove(id);
+            lastGroupsCopy.remove(id);
         });
         // check for removed devices and notify
-        lastGroupCopy.forEach((id, group) -> {
+        lastGroupsCopy.forEach((id, group) -> {
             logger.trace("Homematic IP group '{}' removed", group.getId());
             lastGroups.remove(id);
             var listener = thingStatusListeners.get(id);
@@ -202,6 +211,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     /**
      * Check last state for home being changed
      * and notify ThingHandlers accordingly
+     * 
      * @param home new home
      */
     private void updateHome(Home home) {
@@ -229,7 +239,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
      * @return
      */
     public Collection<Group> getGroups() {
-        return lastGroups != null ? lastGroups.values() : Collections.emptyList();
+        return lastGroups.values();
     }
 
     @Override
@@ -243,7 +253,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
      * @return
      */
     public Collection<Device> getDevices() {
-        return lastDevices != null ? lastDevices.values() : Collections.emptyList();
+        return lastDevices.values();
     }
 
     @Override
@@ -262,7 +272,7 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
      * @return
      */
     public boolean isReadyForUse() {
-        return connection != null && connection.isReadyForUse() && state != null;
+        return connection != null && connection.isReadyForUse() && lastHome.get() != null;
     }
 
     /**
@@ -369,5 +379,10 @@ public class HomematicIPBridgeHandler extends ConfigStatusBridgeHandler implemen
     @Override
     public boolean unregisterThingStatusListener(ThingStatusListener lightStatusListener) {
         return thingStatusListeners.remove(lightStatusListener.getId()) != null;
+    }
+
+    @Override
+    public void onReceive(StateChange stateChange) {
+        logger.debug("Received event data: {}", stateChange);
     }
 }

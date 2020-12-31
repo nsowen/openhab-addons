@@ -8,14 +8,16 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
+import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.openhab.binding.homematicip.internal.model.event.StateChange;
 import org.openhab.binding.homematicip.internal.transport.HttpTransport;
+import org.openhab.core.io.net.http.WebSocketFactory;
 import org.openhab.core.io.net.http.internal.ExtensibleTrustManagerImpl;
 import org.openhab.core.io.net.http.internal.WebClientFactoryImpl;
 
@@ -37,17 +39,26 @@ class HomematicIPConnectionTest {
                 super.activate(parameters);
             }
         };
+        var wssFactory = new WebClientFactoryImpl(new ExtensibleTrustManagerImpl()) {
+            @Override
+            public void activate(Map<String, Object> parameters) {
+                super.activate(parameters);
+            }
+        };
         factory.activate(Collections.emptyMap());
-        this.scheduler = Executors.newSingleThreadScheduledExecutor();
-        this.transport = new HttpTransport(factory, null, scheduler);
+        wssFactory.activate(Collections.emptyMap());
+        this.scheduler = Executors.newScheduledThreadPool(10);
+        this.transport = new HttpTransport(factory, wssFactory, scheduler);
         this.connection = new HomematicIPConnection(uuid, accessPointId, transport);
         this.connection.setAuthToken("C72117F990F2C5B1F6715286F071BE9AA2F70C7644BB480DD7323B3AA72996B4");
         this.connection.initializeAsync(scheduler).get();
     }
 
     @Test
-    void testHome() throws ExecutionException, InterruptedException {
+    void testHome() throws ExecutionException, InterruptedException, IOException {
         this.connection.loadCurrentState(scheduler).get();
+        this.connection.enableEventListener(stateChange -> System.out.println("got event: " + stateChange));
+        Thread.sleep(60000L);
     }
 
     @Test

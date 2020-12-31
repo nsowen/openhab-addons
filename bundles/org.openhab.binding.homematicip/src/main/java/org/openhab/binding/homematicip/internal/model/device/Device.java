@@ -154,10 +154,8 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
                 .add("firmwareVersion='" + firmwareVersion + "'").add("connectionType=" + connectionType)
                 .add("modelId=" + modelId).add("modelType='" + modelType + "'")
                 .add("serializedGlobalTradeItemNumber='" + serializedGlobalTradeItemNumber + "'")
-                .add("deviceType='" + type + "'")
-                .add("availableFirmwareVersion='" + availableFirmwareVersion + "'")
+                .add("deviceType='" + type + "'").add("availableFirmwareVersion='" + availableFirmwareVersion + "'")
                 .add("permanentlyReachable=" + permanentlyReachable).add("functionalChannels=" + functionalChannels)
                 .add("baseChannel=" + baseFunctionalChannelType).toString();
     }
-
 }

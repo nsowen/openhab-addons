@@ -22,7 +22,6 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.util.StringContentProvider;
 import org.eclipse.jetty.http.*;
-import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.openhab.binding.homematicip.internal.HomematicIPEventListener;
 import org.openhab.binding.homematicip.internal.model.HomematicIPObject;
 import org.openhab.binding.homematicip.internal.model.event.StateChange;
@@ -54,8 +53,10 @@ public class HttpTransport implements Transport, WebSocketListener {
      * @param httpClientFactory client factory given by OpenHAB
      * @param webSocketFactory web socket factory given by OpenHAB
      */
-    public HttpTransport(HttpClientFactory httpClientFactory, WebSocketFactory webSocketFactory, ScheduledExecutorService scheduler) {
+    public HttpTransport(HttpClientFactory httpClientFactory, WebSocketFactory webSocketFactory,
+            ScheduledExecutorService scheduler) {
         this.webSocketFactory = webSocketFactory;
+        this.websocket = new HomematicIPWebSocket(this, scheduler, webSocketFactory);
         this.scheduler = scheduler;
         this.client = httpClientFactory.createHttpClient("homeamticip");
         client.setConnectTimeout(5 * 1000L);
@@ -89,6 +90,10 @@ public class HttpTransport implements Transport, WebSocketListener {
         defaultHeaders.remove(header);
     }
 
+    private String getDefaultHeader(String header) {
+        return defaultHeaders.get(header);
+    }
+
     @Override
     public void setClientAuth(String clientAuth) {
         setDefaultHeader(HEADER_CLIENTAUTH, clientAuth);
@@ -104,7 +109,11 @@ public class HttpTransport implements Transport, WebSocketListener {
     }
 
     public String getClientAuth() {
-        return defaultHeaders.get(HEADER_CLIENTAUTH);
+        return getDefaultHeader(HEADER_CLIENTAUTH);
+    }
+
+    public String getAuthToken() {
+        return getDefaultHeader(HEADER_AUTHTOKEN);
     }
 
     @Override
@@ -164,9 +173,12 @@ public class HttpTransport implements Transport, WebSocketListener {
 
     @Override
     public void enableWebSocket(String wssUrl, HomematicIPEventListener listener) throws IOException {
+        if (!hasAuthToken()) {
+            throw new IllegalStateException("Cannot enable websocket without AUTHTOKEN");
+        }
         try {
             synchronized (this) {
-                websocket = new HomematicIPWebSocket(this, scheduler, wssUrl, webSocketFactory, getClientAuth());
+                websocket.start(wssUrl, defaultHeaders, false);
                 websocketListener = listener;
             }
         } catch (Exception e) {
@@ -195,11 +207,9 @@ public class HttpTransport implements Transport, WebSocketListener {
 
     @Override
     public void onWebSocketClose() {
-
     }
 
     @Override
     public void onWebSocketError(Throwable cause) {
-
     }
 }

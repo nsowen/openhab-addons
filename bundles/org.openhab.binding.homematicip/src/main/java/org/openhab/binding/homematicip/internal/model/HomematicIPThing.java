@@ -10,26 +10,29 @@ public interface HomematicIPThing {
 
     /**
      * Returns the unique ID of the thing
+     * 
      * @return unique ID of the thing
      */
     String getId();
 
     /**
      * Returns the home ID of the home the thing is located
+     * 
      * @return home ID of the home the thing is located
      */
     String getHomeId();
 
     /**
      * Returns a human-readable label of the thing
+     * 
      * @return human-readable label of the thing
      */
     String getLabel();
 
     /**
      * Returns a human-readable type of the thing
+     * 
      * @return human-readable type of the thing
      */
     String getType();
-
 }

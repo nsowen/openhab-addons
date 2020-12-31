@@ -55,5 +55,4 @@ public interface ThingStatusListener<T extends HomematicIPThing> {
      * @param thing The thing which is added.
      */
     void onAdded(T thing);
-
 }

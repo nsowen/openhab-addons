@@ -11,5 +11,4 @@ import org.openhab.binding.homematicip.internal.model.event.StateChange;
 public interface HomematicIPEventListener {
 
     void onReceive(StateChange stateChange);
-
 }

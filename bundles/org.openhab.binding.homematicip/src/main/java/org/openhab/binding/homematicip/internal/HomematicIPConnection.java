@@ -19,6 +19,7 @@ import java.util.StringJoiner;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.commons.lang.StringUtils;
@@ -143,7 +144,7 @@ public class HomematicIPConnection {
      * @param executor executor pool to use for this request
      * @return the connection
      */
-    public CompletableFuture<GetCurrentStateResponse> loadCurrentState(Executor executor) {
+    public CompletableFuture<GetCurrentStateResponse> loadCurrentState(ScheduledExecutorService executor) {
         return CompletableFuture.supplyAsync(() -> {
             Response<GetCurrentStateRequest, GetCurrentStateResponse> response;
             try {
@@ -286,6 +287,14 @@ public class HomematicIPConnection {
             throw new IOException("Unexpected response for authConfirmToken: " + response);
         }
         return response.getResponseBody();
+    }
+
+    public void enableEventListener(HomematicIPEventListener listener) throws IOException {
+        transport.enableWebSocket(urlWebSocket, listener);
+    }
+
+    public void disableEventListener() {
+        transport.disableWebSocket();
     }
 
     /**
