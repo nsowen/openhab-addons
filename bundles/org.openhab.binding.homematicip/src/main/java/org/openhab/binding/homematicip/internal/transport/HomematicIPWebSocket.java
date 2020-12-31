@@ -1,11 +1,9 @@
 package org.openhab.binding.homematicip.internal.transport;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.nio.charset.CharsetDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
@@ -22,7 +20,6 @@ import org.eclipse.jetty.websocket.api.extensions.Frame;
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
 import org.eclipse.jetty.websocket.common.WebSocketSession;
-import org.eclipse.jetty.websocket.common.frames.BinaryFrame;
 import org.eclipse.jetty.websocket.common.frames.PongFrame;
 import org.openhab.core.io.net.http.WebSocketFactory;
 import org.slf4j.Logger;
@@ -53,7 +50,8 @@ public class HomematicIPWebSocket {
     private ReentrantLock lock = new ReentrantLock();
     private @Nullable volatile String currentUrl;
 
-    public HomematicIPWebSocket(WebSocketListener socketEventListener, ScheduledExecutorService scheduler, WebSocketFactory webSocketFactory) {
+    public HomematicIPWebSocket(WebSocketListener socketEventListener, ScheduledExecutorService scheduler,
+            WebSocketFactory webSocketFactory) {
         this.socketEventListener = socketEventListener;
         this.scheduler = scheduler;
 
@@ -64,7 +62,7 @@ public class HomematicIPWebSocket {
         webSocketClient.setMaxIdleTimeout(150000);
     }
 
-    public void start(String wssUrl, Map<String,String> headers, boolean forceReconnect) throws Exception {
+    public void start(String wssUrl, Map<String, String> headers, boolean forceReconnect) throws Exception {
         lock.lock();
         currentUrl = wssUrl;
         webSocketClient.start();
@@ -123,7 +121,9 @@ public class HomematicIPWebSocket {
     @OnWebSocketConnect
     public void onConnect(Session session) {
         closing = false;
-        logger.debug("Connected to Homematic IP WebSocket ({}): {}", currentUrl, session.getUpgradeResponse().getStatusCode() + " " + session.getUpgradeResponse().getStatusReason() + "");
+        logger.debug("Connected to Homematic IP WebSocket ({}): {}", currentUrl,
+                session.getUpgradeResponse().getStatusCode() + " " + session.getUpgradeResponse().getStatusReason()
+                        + "");
         connectionTracker = scheduler.scheduleWithFixedDelay(this::sendKeepAlivePing, 30, 30, TimeUnit.SECONDS);
     }
 
