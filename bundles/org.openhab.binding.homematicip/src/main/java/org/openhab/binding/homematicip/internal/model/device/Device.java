@@ -145,6 +145,78 @@ public abstract class Device<T extends FunctionalChannel> extends HomematicIPObj
     public void resolveMappings(Map<String, Device> devices, Map<String, Group> groups) {
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setHomeId(String homeId) {
+        this.homeId = homeId;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public void setLastStatusUpdate(Instant lastStatusUpdate) {
+        this.lastStatusUpdate = lastStatusUpdate;
+    }
+
+    public void setManufacturerCode(int manufacturerCode) {
+        this.manufacturerCode = manufacturerCode;
+    }
+
+    public void setOem(String oem) {
+        this.oem = oem;
+    }
+
+    public void setFirmwareVersionInteger(int firmwareVersionInteger) {
+        this.firmwareVersionInteger = firmwareVersionInteger;
+    }
+
+    public void setUpdateState(DeviceUpdateState updateState) {
+        this.updateState = updateState;
+    }
+
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
+
+    public void setConnectionType(ConnectionType connectionType) {
+        this.connectionType = connectionType;
+    }
+
+    public void setModelId(int modelId) {
+        this.modelId = modelId;
+    }
+
+    public void setModelType(String modelType) {
+        this.modelType = modelType;
+    }
+
+    public void setSerializedGlobalTradeItemNumber(String serializedGlobalTradeItemNumber) {
+        this.serializedGlobalTradeItemNumber = serializedGlobalTradeItemNumber;
+    }
+
+    public void setAvailableFirmwareVersion(String availableFirmwareVersion) {
+        this.availableFirmwareVersion = availableFirmwareVersion;
+    }
+
+    public void setPermanentlyReachable(boolean permanentlyReachable) {
+        this.permanentlyReachable = permanentlyReachable;
+    }
+
+    public void setFunctionalChannels(Map<Integer, FunctionalChannel> functionalChannels) {
+        this.functionalChannels = functionalChannels;
+    }
+
+    public void setFunctionalChannelMap(Map<FunctionalChannelType, FunctionalChannel> functionalChannelMap) {
+        this.functionalChannelMap = functionalChannelMap;
+    }
+
+    public void setBaseFunctionalChannelType(FunctionalChannelType baseFunctionalChannelType) {
+        this.baseFunctionalChannelType = baseFunctionalChannelType;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", Device.class.getSimpleName() + "[", "]").add("id='" + id + "'")
